@@ -21,87 +21,133 @@ async function loadPokemon() {
         pokeName.innerHTML = pokeNameUp;
         pokeNumber.innerHTML = currentPokemon.id
         pokeImg.src = currentPokemon.sprites.other.dream_world.front_default;
-        typeColorProcess(currentPokemon, typeContainer, i)
+        pokeListTypeProcess(currentPokemon, typeContainer, i)
         console.log(currentPokemon);
     }
 }
 
-function typeColorProcess(Pokemon, typeContainer, i) {
+function openPokeCard(i) {
+    let container = document.getElementById('fullPokemonCard');
+    i--;
+    let pokeNameUp = allPokemon[i].name.charAt(0).toUpperCase() + allPokemon[i].name.slice(1);
+    let poke = allPokemon[i];
+    container.classList.remove('d-none');
+    container.innerHTML = renderPokeCardHTML(i, poke, pokeNameUp);
+    // renderPokeCardNavbarHTML();
+    pokeCardTypeProcess(i);
+    renderPokeCardStats(poke);
+}
+
+function renderPokeCardStats(poke) {
+    for (let j = 0; j < poke.stats.length; j++) {
+        const pokeStats = poke.stats[j].base_stat;
+        document.getElementById('pokeInfoBox').innerHTML += `
+
+            <p>${pokeStats}</p>
+
+        `;
+    }
+}
+
+
+
+function pokeListTypeProcess(Pokemon, typeContainer, i) {
+    i--;
     for (let j = 0; j < Pokemon.types.length; j++) {
         const pokeType = Pokemon.types[j].type.name.charAt(0).toUpperCase() + Pokemon.types[j].type.name.slice(1);
         console.log(pokeType);
         typeContainer.innerHTML += `
         <div class="pokeTypeBox" id="pokeTypeBox${i}${j}">${pokeType}</div>
         `;
-        chooseTypeColor(i, j);
+        determineBgrColor(i, j);
     }
 }
 
-function getPokeTypes(i) {
+function pokeCardTypeProcess(i) {
     for (let j = 0; j < allPokemon[i].types.length; j++) {
-        const element = allPokemon[i].types[j].type.name;
+        const pokeTypeName = allPokemon[i].types[j].type.name;
+        let pokeTypeUp = pokeTypeName.charAt(0).toUpperCase() + pokeTypeName.slice(1);
         let typeBox = document.getElementById('pokeCardTypes');
         typeBox.innerHTML += `
-        <p class="pokeTypeBox">${element}</p>
+        <p id="pokeTypeBox${i}${j}" class="pokeTypeBox">${pokeTypeUp}</p>
         `;
+        pokeCardTypeBgr(i, j);
     }
 }
 
-function openPokeCard(i) {
-    let container = document.getElementById('fullPokemonCard');
-    i = i -1;
-    let poke = allPokemon[i];
-    container.classList.remove('d-none');
-    container.innerHTML = renderPokeCardHTML(i, poke);
-    getPokeTypes(i);
-    choosePokeCardTypeColor();
+function chooseCardTypeBGR(typeBox) {
+    if (typeBox.innerHTML == 'Grass') {
+        typeBox.style.background = 'rgb(43 255 49)';
+    } else if (typeBox.innerHTML == 'Fire') {
+        typeBox.style.background = 'red';
+    } else if (typeBox.innerHTML == 'Water') {
+        typeBox.style.background = 'blue';
+    } else if (typeBox.innerHTML == 'Poison') {
+        typeBox.style.background = 'purple';
+    } else if (typeBox.innerHTML == 'Flying') {
+        typeBox.style.background = "rgb(0 144 247)";
+    } else if (typeBox.innerHTML == 'Normal') {
+        typeBox.style.background = "rgb(114 35 57)";
+    } else if (typeBox.innerHTML == 'Bug') {
+        typeBox.style.background = "green";
+    }
+}
+
+function chooseCardBGR(typeBoxMain, container) {
+    if (typeBoxMain.innerHTML == 'Grass') {
+        container.style.background = 'rgb(9 155 13)';
+    } else if (typeBoxMain.innerHTML == 'Fire') {
+        container.style.background = 'red';
+    } else if (typeBoxMain.innerHTML == 'Water') {
+        container.style.background = 'blue';
+    } else if (typeBoxMain.innerHTML == 'Poison') {
+        container.style.background = 'purple';
+    } else if (typeBoxMain.innerHTML == 'Flying') {
+        container.style.background = "rgb(0 144 247)";
+    } else if (typeBoxMain.innerHTML == 'Normal') {
+        container.style.background = "rgb(114 35 57)";
+    } else if (typeBoxMain.innerHTML == 'Bug') {
+        container.style.background = "green";
+    }
+}
+
+function pokeCardTypeBgr(i, j) {
+    let typeBox = document.getElementById('pokeTypeBox' + i + j);
+    let typeBoxMain = document.getElementById('pokeTypeBox' + i + 0);
+    let container = document.getElementById('pokeCardContainer');
+    chooseCardTypeBGR(typeBox);
+    chooseCardBGR(typeBoxMain, container);
+
+}
+
+function pokeCardBackground() {
+
 }
 
 
 
-function chooseTypeColor(i, j) {
+
+function determineBgrColor(i, j) {
     let typeBox = document.getElementById('pokeTypeBox' +i + j);
     if (typeBox.innerHTML == 'Grass') {
-        typeBox.style.color = 'rgb(43 255 49)'
+        typeBox.style.background = 'rgb(43 255 49)';
     } else if (typeBox.innerHTML == 'Fire') {
-        typeBox.style.color = 'red'
+        typeBox.style.background = 'red';
     } else if (typeBox.innerHTML == 'Water') {
-        typeBox.style.color = 'blue'
+        typeBox.style.background = 'blue';
     } else if (typeBox.innerHTML == 'Poison') {
-        typeBox.style.color = 'purple'
+        typeBox.style.background = 'purple';
     } else if (typeBox.innerHTML == 'Flying') {
-        typeBox.style.color = "rgb(0 144 247)"
+        typeBox.style.background = "rgb(0 144 247)";
     } else if (typeBox.innerHTML == 'Normal') {
-        typeBox.style.color = "rgb(114 35 57)"
+        typeBox.style.background = "rgb(114 35 57)";
     } else if (typeBox.innerHTML == 'Bug') {
-        typeBox.style.color = "green"
+        typeBox.style.background = "green";
     }
 }
-
-
-function choosePokeCardTypeColor() {
-    let typeBox = document.getElementById('pokeCardTypes');
-    if (typeBox.innerHTML == 'Grass') {
-        typeBox.style.color = 'rgb(43 255 49)'
-    } else if (typeBox.innerHTML == 'Fire') {
-        typeBox.style.color = 'red'
-    } else if (typeBox.innerHTML == 'Water') {
-        typeBox.style.color = 'blue'
-    } else if (typeBox.innerHTML == 'Poison') {
-        typeBox.style.color = 'purple'
-    } else if (typeBox.innerHTML == 'Flying') {
-        typeBox.style.color = "rgb(0 144 247)"
-    } else if (typeBox.innerHTML == 'Normal') {
-        typeBox.style.color = "rgb(114 35 57)"
-    } else if (typeBox.innerHTML == 'Bug') {
-        typeBox.style.color = "green"
-    }
-}
-
-
 
 function renderPokemonCard(i) {
-    return `
+    return /*html*/`
     <div onclick="openPokeCard(${i})" class="pokemonCard glow-on-hover" id="pokemonCard${i}">
         <div class="pokemonWindow" id="pokemonWindow${i}">
             <div class="cardHead">
@@ -120,34 +166,43 @@ function renderPokemonCard(i) {
 
 
 
-function renderPokeCardHTML(i, poke) {
-    return `
-    <div class="pokeCardContainer" onclick="event.stopPropagation()">
+function renderPokeCardHTML(i, poke, pokeNameUp) {
+    return /*html*/`
+    <div class="pokeCardContainer" id="pokeCardContainer" onclick="event.stopPropagation()">
         <div class="pokeCardHeadBox">
             <div class="pokeCardInteraction">
                 <button class="pokeCardBackBtn" onclick="closePokeCard()"></button>
-                <img id="pokeCardLikeImg${i}" class="pokeCardLikeImg" src="./img/notLiked.png">
+                <img id="pokeCardLikeImg" class="pokeCardLikeImg" src="./img/notLiked.png">
             </div>
-            <div id="pokeCardIdent${i}" class="pokeCardIdent">
+            <div id="pokeCardIdent" class="pokeCardIdent">
                 <div class="pokeTag">
-                    <p>${poke.name}</p>
-                    <div id="pokeCardTypes" class="pokeCardTypes">
+                    <h1><b>${pokeNameUp}</b></h1>
+                <div id="pokeCardTypes" class="pokeCardTypes">
+                </div>
+                </div>
+                    <p>#000${i + 1}</p>
                 </div>
             </div>
-                <p>#000${i + 1}</p>
-            </div>
+                <img class="pokeCardPokeImg" src="${poke.sprites.other.dream_world.front_default}">
+        <div id="pokeCardBottomBox" class="pokeCardBottomBox">
+            <nav class="navbar pokeCardNavbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" href="#">Pokeinfo</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        <a class="nav-item nav-link" href="#">About<span class="sr-only">(current)</span></a>
+                        <a class="nav-item nav-link" href="#">Base Stats</a>
+                        <a class="nav-item nav-link" href="#">Evolution</a>
+                    </div>
+                </div>
+            </nav>
+        <div class="pokeInfoBox" id="pokeInfoBox"></div>
+        </div>
+        </div>
 
-        </div>
-        <img class="pokeCardPokeImg" src="${poke.sprites.other.dream_world.front_default}">
-        <div id="pokeCardBottomBox${i}" class="pokeCardBottomBox">
-            <div class="pokeCardMenubar">                
-            </div>
-            <div class="pokeCardStats">
-            </div>
-            <div class="pokeCardBreed">
-            </div>
-        </div>
-    </div>
     `;
 }
 
@@ -158,4 +213,11 @@ function closePokeCard() {
     document.getElementById('fullPokemonCard').classList.add('d-none');
 }
 
+
+// function renderPokeCardNavbarHTML() {
+//     let bottomBox = document.getElementById('pokeCardBottomBox');
+//    return bottomBox.innerHTML += ` 
+
+//     `;
+// }
 
