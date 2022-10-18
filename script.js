@@ -6,12 +6,12 @@ let currentSpeciesInfo = [];
 let evolutionChainInfo = [];
 let pokeLoadLoop = 20;
 let pokeLoadLoopNow = 1;
-
+let maxPoke = 151;
+let lockFunction = false;
 
 async function loadPokemon() {
     // let url = 'https://pokeapi.co/api/v2/pokemon/charmander';
     let pokedex = document.getElementById('pokedex');
-
         for (pokeLoadLoopNow; pokeLoadLoopNow <= pokeLoadLoop; pokeLoadLoopNow++) {
             const url = `https://pokeapi.co/api/v2/pokemon/${pokeLoadLoopNow}`;
             let response = await fetch(url);
@@ -25,6 +25,7 @@ async function loadPokemon() {
             // getPokemonSpeciesURL(i);
         }
         pokeLoadLoop += 20;
+
     // console.log('loaded Pokemon', currentPokemon);
 }
 
@@ -91,19 +92,26 @@ function renderEvolutionChain(i) {
     `;
 }
 
-let positionCounter = 900;
 
-function offSet() {
-    let pokedex = document.getElementById('pokedex');
-    let pokePosTop = pokedex.offsetTop
-    let pokePos = pokedex.getBoundingClientRect();
+async function offSet() {
+    
+    if(!lockFunction) {
+    let pageBottom = 100;
+    let viewerHeight = document.body.scrollHeight;
+    let currentScrollPosition = window.scrollY + window.innerHeight;
+    lockFunction = true;
 
-    if(window.scrollY >= positionCounter) {
-        console.log('geht');
-        loadPokemon();
-        positionCounter += 900;
-    } else {
+        if(pokeLoadLoop <= 140) {
+            if(currentScrollPosition + pageBottom > viewerHeight) {
+               await loadPokemon();
+            } 
+        }   else {
+                console.log('STOP');
+        }
+        lockFunction = false;
+
     }
+    console.log('garnicht');
 }
 
 
