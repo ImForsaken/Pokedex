@@ -112,18 +112,19 @@ body {
     margin-top: 5px;
     display: flex;
     gap: 5px;
-    text-align: center;
 }
 
 .cardHead p {
-    height: 24px;
-    width: 24px;
+    text-align: center;
+    height: max-content;
+    min-height: 40px;
+    min-width: 40px;
     border: 1px solid black;
     border-radius: 50%;
+    padding: 5px;
     display: flex;
-    padding: 12px;
-    align-items: center;
     justify-content: center;
+    align-items: center;
 }
 
 .pokemonCard img {

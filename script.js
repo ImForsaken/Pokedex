@@ -4,11 +4,16 @@ let allPokemonSpecies = [];
 let testPoke = [];
 let currentSpeciesInfo = [];
 let evolutionChainInfo = [];
+let evolutionChainMaxSpeciesInfo = [];
+let evolutionChainMidSpeciesInfo = [];
+let evolutionChainMinSpeciesInfo = [];
 let pokeLoadLoop = 20;
 let pokeLoadLoopNow = 1;
 let maxPoke = 151;
 let lockFunction = false;
 
+
+//fetches the Data of specific Pokemon
 async function loadPokemon() {
     // let url = 'https://pokeapi.co/api/v2/pokemon/charmander';
     let pokedex = document.getElementById('pokedex');
@@ -57,38 +62,73 @@ async function getAllPokeDataTest(i) {
     console.log('TestPoke', currentSpeciesInfo);
     console.log('ChainJSON', evolutionChainInfo);
 
-    // console.log('Entwickelt durch', currentSpeciesInfo.evolves_from_species.name);
-    // console.log('Entwickelt zu', evolutionChainInfo.chain.evolves_to[0].evolves_to[0].species.name);
-    if (evolutionChainInfo.chain.evolves_to[0].evolves_to[0].species.hasOwnProperty('name')) {
+
+    if(0 in evolutionChainInfo.chain.evolves_to[0].evolves_to){
         let maxEvo = evolutionChainInfo.chain.evolves_to[0].evolves_to[0].species.name;
-        console.log('Dritte Entwicklung', maxEvo);
-    } else {
-        console.log('Keine dritte Entwicklung');
+        let maxEvoUrl = evolutionChainInfo.chain.evolves_to[0].evolves_to[0].species.url;
+        let maxEvoUrlResponse = await fetch(maxEvoUrl);
+        evolutionChainMaxSpeciesInfo.push(await maxEvoUrlResponse.json());
+        console.log('Dritte Stufe 3', maxEvo, maxEvoUrl);
     }
-    if (evolutionChainInfo.chain.evolves_to[0].species.name) {
+    if ('species' in evolutionChainInfo.chain.evolves_to[0]) {
         let midEvo = evolutionChainInfo.chain.evolves_to[0].species.name;
-        console.log('ChainJSONMidEvo', midEvo);
-    } else {
-        console.log('Keine Zweite entwicklung');
+        let midEvoUrl = evolutionChainInfo.chain.evolves_to[0].species.url;
+        let midEvoUrlResponse = await fetch(midEvoUrl);
+        evolutionChainMidSpeciesInfo.push(await midEvoUrlResponse.json());
+        console.log('Zweite Stufe 2', midEvo, midEvoUrl);
     }
-    if (evolutionChainInfo.chain.species.name) {
+    if ('name' in evolutionChainInfo.chain.species) {
         let minEvo = evolutionChainInfo.chain.species.name;
-        console.log('ChainJSONMinEvo', minEvo);
-    } else {
-        console.log('Keine erste Entwicklung')
+        let minEvoUrl = evolutionChainInfo.chain.species.url;
+        let mindEvoUrlResponse = await fetch(minEvoUrl);
+        evolutionChainMinSpeciesInfo.push(await mindEvoUrlResponse.json());
+        console.log('Erste Stufe 1', minEvo, minEvoUrl);
+        
     }
+
+  
+
+
+    //max evo und mid evo sind die gleichen paths. Code changen und in einen fluss bekommen. Man könnte alles in einer if else if abfrage rergeln statt einzelne if sections zu coden
+    // if (evolutionChainInfo.chain.evolves_to[0].evolves_to[0].species.hasOwnProperty('name')) {
+    //     let maxEvo = evolutionChainInfo.chain.evolves_to[0].evolves_to[0].species.name;
+    //     console.log('Dritte Entwicklung 3', maxEvo);
+    // } else if (evolutionChainInfo.chain.evolves_to[0].species.hasOwnProperty('name')) {
+    //     let maxEvo = evolutionChainInfo.chain.evolves_to[0].species.name;
+    //     console.log('Dritte Entwicklung', maxEvo);
+    // } else {
+    //     console.log('Keine dritte Entwicklung');
+    // }
+
+    
+    // if (evolutionChainInfo.chain.evolves_to[0].species.name) {
+    //     let midEvo = evolutionChainInfo.chain.evolves_to[0].species.name;
+    //     console.log('ChainJSONMidEvo 2', midEvo);
+    // } else {
+    //     console.log('Keine Zweite entwicklung');
+    // }
+    // if (evolutionChainInfo.chain.species.name) {
+    //     let minEvo = evolutionChainInfo.chain.species.name;
+    //     console.log('ChainJSONMinEvo 2', minEvo);
+    // } else {
+    //     console.log('Keine erste Entwicklung')
+    // }
+}
+
+function getEvolutionSpeciesDetails() {
+
 }
 
 
 function renderEvolutionChain(i) {
     let container = document.getElementById('pokeInfoBox');
-    let maxEvo = evolutionChainInfo.chain.evolves_to[0].evolves_to[0].species.name.charAt(0).toUpperCase() + evolutionChainInfo.chain.evolves_to[0].evolves_to[0].species.name.slice(1);
+    // let maxEvo = evolutionChainInfo.chain.evolves_to[0].evolves_to[0].species.name.charAt(0).toUpperCase() + evolutionChainInfo.chain.evolves_to[0].evolves_to[0].species.name.slice(1);
     let midEvo = evolutionChainInfo.chain.evolves_to[0].species.name.charAt(0).toUpperCase() + evolutionChainInfo.chain.evolves_to[0].species.name.slice(1);
     let minEvo = evolutionChainInfo.chain.species.name.charAt(0).toUpperCase() + evolutionChainInfo.chain.species.name.slice(1);
-
+    // ${maxEvo}, einsetzen if max evo exist
     container.innerHTML = '';
     container.innerHTML += `
-        ${maxEvo}, ${midEvo}, ${minEvo}
+         ${midEvo}, ${minEvo}
     `;
 }
 
@@ -115,7 +155,7 @@ async function offSet() {
 }
 
 
-
+// places the Info into pokemon list card
 function manageDataprocess(i) {
     let pokeName = document.getElementById(`pokemonName${i}`);
     let pokeNumber = document.getElementById(`pokeNumber${i}`);
@@ -124,20 +164,6 @@ function manageDataprocess(i) {
     pokeName.innerHTML = pokeNameUp;
     pokeNumber.innerHTML = currentPokemon.id
     pokeImg.src = currentPokemon.sprites.other.dream_world.front_default;
-}
-
-async function testID(i) {
-    i++
-    const url = `https://pokeapi.co/api/v2/evolution-chain/90/`; 
-    let response = await fetch(url);
-    let currentPokemonChain = await response.json();
-    console.log('pokechain', currentPokemonChain);
-    // let currenChainLink = currentPokemonChain['evolution_chain']['url'];
-    // let chainResponse = await fetch(currenChainLink);
-    // let currenChain = await chainResponse.json();
-
-
-    // console.log('chain Url', currenChain, i);
 }
 
 
@@ -162,7 +188,6 @@ function openPokeCard(i) {
     pokeCardTypeProcess(i);
     // renderPokeCardStats(poke);
     renderPokeAbout(i);
-    // testID(i);
 }
 
 
@@ -302,7 +327,7 @@ function renderPokeCardHTML(i, poke, pokeNameUp) {
             </div>
                 <img class="pokeCardPokeImg" src="${poke.sprites.other.dream_world.front_default}">
         <div id="pokeCardBottomBox" class="pokeCardBottomBox">
-            <nav class="navbar pokeCardNavbar navbar-expand-lg navbar-light bg-light">
+            <nav onclick="return false;" class="navbar pokeCardNavbar navbar-expand-lg navbar-light bg-light">
                 <a class="navbar-brand" href="#">Pokeinfo</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
                     aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
