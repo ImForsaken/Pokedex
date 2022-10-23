@@ -260,9 +260,19 @@ body {
     margin-left: 5px;
 }
 
-.pokeInfoBox {
+.pokeAboutContainer {
     height: 100%;
     margin-top: 10px;
+}
+
+.headAboutContainer {
+    display: flex;
+    justify-content: space-around;
+}
+
+.pokeAboutChildBox {
+    width: 50%;
+    justify-content: space-between;
 }
 
 .pokeStats {
@@ -276,7 +286,14 @@ body {
     color: rgb(141, 143, 146);
 }
 
+.pokeEvoContainer {
+    height: 100%;
+    margin-top: 10px;
+}
 
+.pokeEvoBox img{
+    height: 100px;
+}
 
 @media (max-width: 992px) {
     .navbar-toggler {

@@ -7,6 +7,9 @@ let evolutionChainInfo = [];
 let evolutionChainMaxSpeciesInfo = [];
 let evolutionChainMidSpeciesInfo = [];
 let evolutionChainMinSpeciesInfo = [];
+let currentEvoMaxInfo;
+let currentEvoMidInfo;
+let currentEvoMinInfo;
 let pokeLoadLoop = 20;
 let pokeLoadLoopNow = 1;
 let maxPoke = 151;
@@ -69,6 +72,12 @@ async function getAllPokeDataTest(i) {
         let maxEvoUrlResponse = await fetch(maxEvoUrl);
         evolutionChainMaxSpeciesInfo.push(await maxEvoUrlResponse.json());
         console.log('Dritte Stufe 3', maxEvo, maxEvoUrl);
+        let maxEvoId = evolutionChainMaxSpeciesInfo[0].id;
+        let url = `https://pokeapi.co/api/v2/pokemon/${maxEvoId}`;
+        let response = await fetch(url);
+        currentEvoMaxInfo = await response.json();
+        console.log('ID 3', currentEvoMaxInfo);
+
     }
     if ('species' in evolutionChainInfo.chain.evolves_to[0]) {
         let midEvo = evolutionChainInfo.chain.evolves_to[0].species.name;
@@ -76,18 +85,29 @@ async function getAllPokeDataTest(i) {
         let midEvoUrlResponse = await fetch(midEvoUrl);
         evolutionChainMidSpeciesInfo.push(await midEvoUrlResponse.json());
         console.log('Zweite Stufe 2', midEvo, midEvoUrl);
+        let midEvoId = evolutionChainMidSpeciesInfo[0].id;
+        let url = `https://pokeapi.co/api/v2/pokemon/${midEvoId}`;
+        let response = await fetch(url);
+        currentEvoMidInfo = await response.json();
+        console.log('ID 2', currentEvoMidInfo);
+
     }
     if ('name' in evolutionChainInfo.chain.species) {
         let minEvo = evolutionChainInfo.chain.species.name;
         let minEvoUrl = evolutionChainInfo.chain.species.url;
-        let mindEvoUrlResponse = await fetch(minEvoUrl);
-        evolutionChainMinSpeciesInfo.push(await mindEvoUrlResponse.json());
+        let minEvoUrlResponse = await fetch(minEvoUrl);
+        evolutionChainMinSpeciesInfo.push(await minEvoUrlResponse.json());
         console.log('Erste Stufe 1', minEvo, minEvoUrl);
-        
+        let minEvoId = evolutionChainMinSpeciesInfo[0].id;
+        let url = `https://pokeapi.co/api/v2/pokemon/${minEvoId}`;
+        let response = await fetch(url);
+        currentEvoMinInfo = await response.json();
+        console.log('ID 1', currentEvoMinInfo);
+
     }
 
-  
 
+       
 
     //max evo und mid evo sind die gleichen paths. Code changen und in einen fluss bekommen. Man könnte alles in einer if else if abfrage rergeln statt einzelne if sections zu coden
     // if (evolutionChainInfo.chain.evolves_to[0].evolves_to[0].species.hasOwnProperty('name')) {
@@ -115,22 +135,105 @@ async function getAllPokeDataTest(i) {
     // }
 }
 
-function getEvolutionSpeciesDetails() {
+
+function renderPokeAbout(i) {
+    let container = document.getElementById('pokeAboutContainer');
+    let cleanContainer1 = document.getElementById('pokeStatsContainer');
+    let cleanContainer2 = document.getElementById('pokeEvoContainer');
+    
+    let poke = allPokemon[i];
+    container.innerHTML = '';
+    cleanContainer1.innerHTML = '';
+    cleanContainer2.innerHTML = '';
+    container.innerHTML = `
+    <div class="headAboutContainer" id="headAboutContainer">
+        <div class="headAboutBoxLeft" id="headAboutBoxLeft">
+            <div class="pokeAboutChildBox d-flex" id="pokeAboutHeight">
+                <p><b>Height:</b></p>
+            </div>
+            <div class="pokeAboutChildBox d-flex" id="pokeAboutWeight">
+                <p><b>Weight:</b></p>
+            </div>
+            <div class="pokeAboutChildBox d-flex" id="pokeAboutAbilities">
+                <p><b>Abilities:</b></p>
+            </div>
+        </div>
+        <div class="headAboutBoxRight">
+            <p>${(poke.height / 10)} M</p>
+            <p>${(poke.weight / 10)} KG</p>
+            <p>${poke.abilities[0].ability.name}, ${poke.abilities[1].ability.name}</p>
+        </div>
+    </div>
+    `;
 
 }
 
 
 function renderEvolutionChain(i) {
-    let container = document.getElementById('pokeInfoBox');
-    // let maxEvo = evolutionChainInfo.chain.evolves_to[0].evolves_to[0].species.name.charAt(0).toUpperCase() + evolutionChainInfo.chain.evolves_to[0].evolves_to[0].species.name.slice(1);
-    let midEvo = evolutionChainInfo.chain.evolves_to[0].species.name.charAt(0).toUpperCase() + evolutionChainInfo.chain.evolves_to[0].species.name.slice(1);
-    let minEvo = evolutionChainInfo.chain.species.name.charAt(0).toUpperCase() + evolutionChainInfo.chain.species.name.slice(1);
-    // ${maxEvo}, einsetzen if max evo exist
+    let cleanAboutContainer = document.getElementById('pokeAboutContainer');
+    let cleanStatsContainer = document.getElementById('pokeStatsContainer');
+    let container = document.getElementById('pokeEvoContainer');
+    let maxEvoName = currentEvoMaxInfo.name.charAt(0).toUpperCase() + currentEvoMaxInfo.name.slice(1);
+    let midEvoName = currentEvoMidInfo.name.charAt(0).toUpperCase() + currentEvoMidInfo.name.slice(1);
+    let minEvoName = currentEvoMinInfo.name.charAt(0).toUpperCase() + currentEvoMinInfo.name.slice(1);
+
+    cleanAboutContainer.innerHTML = '';
+    cleanStatsContainer.innerHTML = '';
     container.innerHTML = '';
     container.innerHTML += `
-         ${midEvo}, ${minEvo}
+    <div class="pokeEvoBox">
+        ${maxEvoName}<br>
+        <img src="${currentEvoMaxInfo.sprites.other.dream_world.front_default}">
+     </div>   
     `;
+    container.innerHTML += `
+        <div class="pokeEvoBox">
+            ${midEvoName}<br>
+            <img src="${currentEvoMidInfo.sprites.other.dream_world.front_default}">
+         </div>   
+        `;
+    container.innerHTML += `
+        <div class="pokeEvoBox">
+            ${minEvoName}<br>
+            <img src="${currentEvoMinInfo.sprites.other.dream_world.front_default}">
+        </div>  
+        `;
 }
+
+//Voheriges pokeabout
+// function renderPokeAbout(i) {
+//     let pokeContainer = document.getElementById('pokeInfoContainer');
+//     pokeContainer.innerHTML = '';
+//     let poke = allPokemon[i];
+//     pokeContainer.innerHTML += `<p>Height: ${(poke.height / 10)} M</p>`;
+//     pokeContainer.innerHTML += `<p>Weight: ${poke.weight / 10} KG</p>`;
+
+// }
+
+
+function renderPokeCardStats(i) {
+    let cleanAboutContainer = document.getElementById('pokeAboutContainer');
+    let cleanEvoContainer = document.getElementById('pokeEvoContainer');
+    let pokeContainer = document.getElementById('pokeStatsContainer');
+    let poke = allPokemon[i];
+
+        cleanAboutContainer.innerHTML = '';
+        cleanEvoContainer.innerHTML = '';
+        pokeContainer.innerHTML = '';
+
+    
+    for (let j = 0; j < poke.stats.length; j++) {
+        const pokeStats = poke.stats[j].base_stat;
+        const pokeStatsName = poke.stats[j].stat.name.charAt(0).toUpperCase() + poke.stats[j].stat.name.slice(1);
+        // let pokeNameUp = allPokemon[i].name.charAt(0).toUpperCase() + allPokemon[i].name.slice(1);
+
+        pokeContainer.innerHTML += `
+            <div id="pokeStats${j}" class="d-flex pokeStats"><p class="pokeStatsP1"><b>${pokeStatsName}:</p></b></div>
+        `;
+        document.getElementById('pokeStats' + j).innerHTML += `<p class="pokeStatsP2">${pokeStats}</p>`
+    }
+}
+
 
 
 async function offSet() {
@@ -254,6 +357,18 @@ function chooseCardBGR(typeBoxMain, container) {
         container.style.background = "green";
     }
 }
+// SPäter einfügen um backgrounds zu deciden
+// function getBackgroundcolors(element) {
+//     return {
+//         fire: 'red',
+//         water: 'blue',
+//         grass: 'green',
+//         poison: 'purple',
+//         fyling: "rgb(0 144 247)",
+//         normal: 'rgb(114 35 57)',
+//         bug: 'green'
+//     }[element.toLowerCase()] || 'white'
+// }
 
 function pokeCardTypeBgr(i, j) {
     let typeBox = document.getElementById('pokeTypeBox' + i + j);
@@ -341,9 +456,11 @@ function renderPokeCardHTML(i, poke, pokeNameUp) {
                     </div>
                 </div>
             </nav>
-        <div class="pokeInfoBox" id="pokeInfoBox"></div>
+            <div class="pokeAboutContainer" id="pokeAboutContainer"></div>
+            <div class="pokeStatsContainer" id="pokeStatsContainer"></div>
+            <div class="pokeEvoContainer" id="pokeEvoContainer"></div>
         </div>
-        </div>
+    </div>
 
     `;
 }
@@ -352,7 +469,7 @@ function renderPokeCardHTML(i, poke, pokeNameUp) {
 // function getPokeInfo(category) {
 //     for (let j = 0; j < poke.category.length; j++) {
 //         const pokeStats = poke.category[j].stat.name;
-//         document.getElementById('pokeInfoBox').innerHTML += `
+//         document.getElementById('pokeInfoContainer').innerHTML += `
 
 //             <p>${pokeStats}</p>
 
@@ -361,31 +478,6 @@ function renderPokeCardHTML(i, poke, pokeNameUp) {
 // }
 
 
-function renderPokeAbout(i) {
-    let pokeContainer = document.getElementById('pokeInfoBox');
-    pokeContainer.innerHTML = '';
-    let poke = allPokemon[i];
-    pokeContainer.innerHTML += `<p>Height: ${(poke.height / 10)} M</p>`;
-    pokeContainer.innerHTML += `<p>Weight: ${poke.weight / 10} KG</p>`;
-
-}
-
-
-function renderPokeCardStats(i) {
-    let pokeContainer = document.getElementById('pokeInfoBox');
-        pokeContainer.innerHTML = '';
-    let poke = allPokemon[i];
-    for (let j = 0; j < poke.stats.length; j++) {
-        const pokeStats = poke.stats[j].base_stat;
-        const pokeStatsName = poke.stats[j].stat.name.charAt(0).toUpperCase() + poke.stats[j].stat.name.slice(1);
-        // let pokeNameUp = allPokemon[i].name.charAt(0).toUpperCase() + allPokemon[i].name.slice(1);
-
-        pokeContainer.innerHTML += `
-            <div id="pokeStats${j}" class="d-flex pokeStats"><p class="pokeStatsP1"><b>${pokeStatsName}:</p></b></div>
-        `;
-        document.getElementById('pokeStats' + j).innerHTML += `<p class="pokeStatsP2">${pokeStats}</p>`
-    }
-}
 
 
 function closePokeCard() {
