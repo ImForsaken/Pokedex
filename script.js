@@ -135,99 +135,105 @@ async function getAllPokeDataTest(i) {
     // }
 }
 
-
+// renders Pokecard about information
 function renderPokeAbout(i) {
     let container = document.getElementById('pokeAboutContainer');
     let cleanContainer1 = document.getElementById('pokeStatsContainer');
     let cleanContainer2 = document.getElementById('pokeEvoContainer');
     
     let poke = allPokemon[i];
-    container.innerHTML = '';
+    cleanContainer1.classList.add('d-none');
+    cleanContainer2.classList.add('d-none');
+    container.classList.remove('d-none');
+
     cleanContainer1.innerHTML = '';
     cleanContainer2.innerHTML = '';
-    container.innerHTML = `
-    <div class="headAboutContainer" id="headAboutContainer">
-        <div class="headAboutBoxLeft" id="headAboutBoxLeft">
-            <div class="pokeAboutChildBox d-flex" id="pokeAboutHeight">
-                <p><b>Height:</b></p>
-            </div>
-            <div class="pokeAboutChildBox d-flex" id="pokeAboutWeight">
-                <p><b>Weight:</b></p>
-            </div>
-            <div class="pokeAboutChildBox d-flex" id="pokeAboutAbilities">
-                <p><b>Abilities:</b></p>
-            </div>
-        </div>
-        <div class="headAboutBoxRight">
-            <p>${(poke.height / 10)} M</p>
-            <p>${(poke.weight / 10)} KG</p>
-            <p>${poke.abilities[0].ability.name}, ${poke.abilities[1].ability.name}</p>
-        </div>
-    </div>
-    `;
+    container.innerHTML = '';
+
+    container.innerHTML = renderPokeStatsHTML(poke);
 
 }
+
 
 
 function renderEvolutionChain(i) {
-    let cleanAboutContainer = document.getElementById('pokeAboutContainer');
-    let cleanStatsContainer = document.getElementById('pokeStatsContainer');
+    let cleanContainer1 = document.getElementById('pokeAboutContainer');
+    let cleanContainer2 = document.getElementById('pokeStatsContainer');
     let container = document.getElementById('pokeEvoContainer');
+
+
+
+    cleanContainer1.classList.add('d-none');
+    cleanContainer2.classList.add('d-none');
+    container.classList.remove('d-none');
+    
+    cleanContainer1.innerHTML = '';
+    cleanContainer2.innerHTML = '';
+    container.innerHTML = '';
+    container.innerHTML = renderEvoBoxHTML();
+    // container.innerHTML += `
+    // <div class="pokeEvoBox">
+    //     ${maxEvoName}<br>
+    //     <img src="${currentEvoMaxInfo.sprites.other.dream_world.front_default}">
+    //  </div>   
+    // `;
+    // container.innerHTML += `
+    //     <div class="pokeEvoBox">
+    //         ${midEvoName}<br>
+    //         <img src="${currentEvoMidInfo.sprites.other.dream_world.front_default}">
+    //      </div>   
+    //     `;
+    // container.innerHTML += `
+    //     <div class="pokeEvoBox">
+    //         ${minEvoName}<br>
+    //         <img src="${currentEvoMinInfo.sprites.other.dream_world.front_default}">
+    //     </div>  
+    //     `;
+}
+
+
+function renderEvoBoxHTML() {
     let maxEvoName = currentEvoMaxInfo.name.charAt(0).toUpperCase() + currentEvoMaxInfo.name.slice(1);
     let midEvoName = currentEvoMidInfo.name.charAt(0).toUpperCase() + currentEvoMidInfo.name.slice(1);
     let minEvoName = currentEvoMinInfo.name.charAt(0).toUpperCase() + currentEvoMinInfo.name.slice(1);
-
-    cleanAboutContainer.innerHTML = '';
-    cleanStatsContainer.innerHTML = '';
-    container.innerHTML = '';
-    container.innerHTML += `
+    
+    return `
     <div class="pokeEvoBox">
         ${maxEvoName}<br>
         <img src="${currentEvoMaxInfo.sprites.other.dream_world.front_default}">
-     </div>   
+    </div>   
+    <div class="pokeEvoBox">
+        ${midEvoName}<br>
+        <img src="${currentEvoMidInfo.sprites.other.dream_world.front_default}">
+    </div> 
+    <div class="pokeEvoBox">
+        ${minEvoName}<br>
+        <img src="${currentEvoMinInfo.sprites.other.dream_world.front_default}">
+    </div>  
     `;
-    container.innerHTML += `
-        <div class="pokeEvoBox">
-            ${midEvoName}<br>
-            <img src="${currentEvoMidInfo.sprites.other.dream_world.front_default}">
-         </div>   
-        `;
-    container.innerHTML += `
-        <div class="pokeEvoBox">
-            ${minEvoName}<br>
-            <img src="${currentEvoMinInfo.sprites.other.dream_world.front_default}">
-        </div>  
-        `;
 }
-
-//Voheriges pokeabout
-// function renderPokeAbout(i) {
-//     let pokeContainer = document.getElementById('pokeInfoContainer');
-//     pokeContainer.innerHTML = '';
-//     let poke = allPokemon[i];
-//     pokeContainer.innerHTML += `<p>Height: ${(poke.height / 10)} M</p>`;
-//     pokeContainer.innerHTML += `<p>Weight: ${poke.weight / 10} KG</p>`;
-
-// }
 
 
 function renderPokeCardStats(i) {
-    let cleanAboutContainer = document.getElementById('pokeAboutContainer');
-    let cleanEvoContainer = document.getElementById('pokeEvoContainer');
-    let pokeContainer = document.getElementById('pokeStatsContainer');
+    let cleanContainer1 = document.getElementById('pokeAboutContainer');
+    let cleanContainer2 = document.getElementById('pokeEvoContainer');
+    let container = document.getElementById('pokeStatsContainer');
     let poke = allPokemon[i];
 
-        cleanAboutContainer.innerHTML = '';
-        cleanEvoContainer.innerHTML = '';
-        pokeContainer.innerHTML = '';
+        cleanContainer1.classList.add('d-none');
+        cleanContainer2.classList.add('d-none');
+        container.classList.remove('d-none');
+
+        cleanContainer1.innerHTML = '';
+        cleanContainer2.innerHTML = '';
+        container.innerHTML = '';
 
     
     for (let j = 0; j < poke.stats.length; j++) {
         const pokeStats = poke.stats[j].base_stat;
         const pokeStatsName = poke.stats[j].stat.name.charAt(0).toUpperCase() + poke.stats[j].stat.name.slice(1);
-        // let pokeNameUp = allPokemon[i].name.charAt(0).toUpperCase() + allPokemon[i].name.slice(1);
 
-        pokeContainer.innerHTML += `
+        container.innerHTML += `
             <div id="pokeStats${j}" class="d-flex pokeStats"><p class="pokeStatsP1"><b>${pokeStatsName}:</p></b></div>
         `;
         document.getElementById('pokeStats' + j).innerHTML += `<p class="pokeStatsP2">${pokeStats}</p>`
@@ -287,9 +293,7 @@ function openPokeCard(i) {
     let poke = allPokemon[i];
     container.classList.remove('d-none');
     container.innerHTML = renderPokeCardHTML(i, poke, pokeNameUp);
-    // renderPokeCardNavbarHTML();
     pokeCardTypeProcess(i);
-    // renderPokeCardStats(poke);
     renderPokeAbout(i);
 }
 
@@ -423,6 +427,9 @@ function renderPokemonCard(i) {
 
 
 
+
+
+
 function renderPokeCardHTML(i, poke, pokeNameUp) {
     return `
     <div class="pokeCardContainer" id="pokeCardContainer" onclick="event.stopPropagation()">
@@ -457,8 +464,8 @@ function renderPokeCardHTML(i, poke, pokeNameUp) {
                 </div>
             </nav>
             <div class="pokeAboutContainer" id="pokeAboutContainer"></div>
-            <div class="pokeStatsContainer" id="pokeStatsContainer"></div>
-            <div class="pokeEvoContainer" id="pokeEvoContainer"></div>
+            <div class="pokeStatsContainer d-none" id="pokeStatsContainer"></div>
+            <div class="pokeEvoContainer d-none" id="pokeEvoContainer"></div>
         </div>
     </div>
 
@@ -466,16 +473,29 @@ function renderPokeCardHTML(i, poke, pokeNameUp) {
 }
 
 
-// function getPokeInfo(category) {
-//     for (let j = 0; j < poke.category.length; j++) {
-//         const pokeStats = poke.category[j].stat.name;
-//         document.getElementById('pokeInfoContainer').innerHTML += `
+function renderPokeStatsHTML(poke) {
+    return `
+    <div class="headAboutContainer" id="headAboutContainer">
+        <div class="headAboutBoxLeft" id="headAboutBoxLeft">
+            <div class="pokeAboutChildBox d-flex" id="pokeAboutHeight">
+                <p><b>Height:</b></p>
+            </div>
+            <div class="pokeAboutChildBox d-flex" id="pokeAboutWeight">
+                <p><b>Weight:</b></p>
+            </div>
+            <div class="pokeAboutChildBox d-flex" id="pokeAboutAbilities">
+                <p><b>Abilities:</b></p>
+            </div>
+        </div>
+        <div class="headAboutBoxRight">
+            <p>${(poke.height / 10)} M</p>
+            <p>${(poke.weight / 10)} KG</p>
+            <p>${poke.abilities[0].ability.name}, ${poke.abilities[1].ability.name}</p>
+        </div>
+    </div>
+    `;
+}
 
-//             <p>${pokeStats}</p>
-
-//         `;
-//     }
-// }
 
 
 
@@ -483,12 +503,4 @@ function renderPokeCardHTML(i, poke, pokeNameUp) {
 function closePokeCard() {
     document.getElementById('fullPokemonCard').classList.add('d-none');
 }
-
-
-// function renderPokeCardNavbarHTML() {
-//     let bottomBox = document.getElementById('pokeCardBottomBox');
-//    return bottomBox.innerHTML += ` 
-
-//     `;
-// }
 

@@ -275,6 +275,8 @@ body {
     justify-content: space-between;
 }
 
+
+
 .pokeStats {
     width: 50%;
     justify-content: space-between;
@@ -286,9 +288,21 @@ body {
     color: rgb(141, 143, 146);
 }
 
+
+
+
+
 .pokeEvoContainer {
     height: 100%;
     margin-top: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.pokeEvoBox {
+    text-align: center;
+    font-weight: bold;
 }
 
 .pokeEvoBox img{
