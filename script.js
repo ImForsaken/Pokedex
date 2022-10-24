@@ -20,19 +20,19 @@ let lockFunction = false;
 async function loadPokemon() {
     // let url = 'https://pokeapi.co/api/v2/pokemon/charmander';
     let pokedex = document.getElementById('pokedex');
-        for (pokeLoadLoopNow; pokeLoadLoopNow <= pokeLoadLoop; pokeLoadLoopNow++) {
-            const url = `https://pokeapi.co/api/v2/pokemon/${pokeLoadLoopNow}`;
-            let response = await fetch(url);
-            currentPokemon = await response.json();
-            allPokemon.push(currentPokemon);
-            pokedex.innerHTML += renderPokemonCard(pokeLoadLoopNow);
-            manageDataprocess(pokeLoadLoopNow)
-            pokeListTypeProcess(currentPokemon, pokeLoadLoopNow);
-            console.log(currentPokemon);
-            
-            // getPokemonSpeciesURL(i);
-        }
-        pokeLoadLoop += 20;
+    for (pokeLoadLoopNow; pokeLoadLoopNow <= pokeLoadLoop; pokeLoadLoopNow++) {
+        const url = `https://pokeapi.co/api/v2/pokemon/${pokeLoadLoopNow}`;
+        let response = await fetch(url);
+        currentPokemon = await response.json();
+        allPokemon.push(currentPokemon);
+        pokedex.innerHTML += renderPokemonCard(pokeLoadLoopNow);
+        manageDataprocess(pokeLoadLoopNow)
+        pokeListTypeProcess(currentPokemon, pokeLoadLoopNow);
+        console.log(currentPokemon);
+
+        // getPokemonSpeciesURL(i);
+    }
+    pokeLoadLoop += 20;
 
     // console.log('loaded Pokemon', currentPokemon);
 }
@@ -53,7 +53,7 @@ async function getAllPokeDataTest(i) {
     const PokespeciesURL = testPoke[0].species.url;
     let SpeciesUrlResponse = await fetch(PokespeciesURL);
     currentSpeciesInfo = await SpeciesUrlResponse.json();
-   
+
 
     const evolutionChainUrl = currentSpeciesInfo.evolution_chain.url;
     let evolutionResponse = await fetch(evolutionChainUrl);
@@ -66,7 +66,7 @@ async function getAllPokeDataTest(i) {
     console.log('ChainJSON', evolutionChainInfo);
 
 
-    if(0 in evolutionChainInfo.chain.evolves_to[0].evolves_to){
+    if (0 in evolutionChainInfo.chain.evolves_to[0].evolves_to) {
         let maxEvo = evolutionChainInfo.chain.evolves_to[0].evolves_to[0].species.name;
         let maxEvoUrl = evolutionChainInfo.chain.evolves_to[0].evolves_to[0].species.url;
         let maxEvoUrlResponse = await fetch(maxEvoUrl);
@@ -107,7 +107,7 @@ async function getAllPokeDataTest(i) {
     }
 
 
-       
+
 
     //max evo und mid evo sind die gleichen paths. Code changen und in einen fluss bekommen. Man könnte alles in einer if else if abfrage rergeln statt einzelne if sections zu coden
     // if (evolutionChainInfo.chain.evolves_to[0].evolves_to[0].species.hasOwnProperty('name')) {
@@ -120,7 +120,7 @@ async function getAllPokeDataTest(i) {
     //     console.log('Keine dritte Entwicklung');
     // }
 
-    
+
     // if (evolutionChainInfo.chain.evolves_to[0].species.name) {
     //     let midEvo = evolutionChainInfo.chain.evolves_to[0].species.name;
     //     console.log('ChainJSONMidEvo 2', midEvo);
@@ -140,14 +140,17 @@ function renderPokeAbout(i) {
     let container = document.getElementById('pokeAboutContainer');
     let cleanContainer1 = document.getElementById('pokeStatsContainer');
     let cleanContainer2 = document.getElementById('pokeEvoContainer');
-    
+    let cleanContainer3 = document.getElementById('pokeMovesContainer');
+
     let poke = allPokemon[i];
     cleanContainer1.classList.add('d-none');
     cleanContainer2.classList.add('d-none');
+    cleanContainer3.classList.add('d-none');
     container.classList.remove('d-none');
 
     cleanContainer1.innerHTML = '';
     cleanContainer2.innerHTML = '';
+    cleanContainer3.innerHTML = '';
     container.innerHTML = '';
 
     container.innerHTML = renderPokeStatsHTML(poke);
@@ -155,20 +158,49 @@ function renderPokeAbout(i) {
 }
 
 
+function renderPokeMoves() {
+    let container = document.getElementById('pokeMovesContainer');
+    let cleanContainer1 = document.getElementById('pokeStatsContainer');
+    let cleanContainer2 = document.getElementById('pokeEvoContainer');
+    let cleanContainer3 = document.getElementById('pokeAboutContainer');
+
+    cleanContainer1.classList.add('d-none');
+    cleanContainer2.classList.add('d-none');
+    cleanContainer3.classList.add('d-none');
+    container.classList.remove('d-none');
+
+    cleanContainer1.innerHTML = '';
+    cleanContainer2.innerHTML = '';
+    cleanContainer3.innerHTML = '';
+    container.innerHTML = '';
+
+
+    for (let j = 0; j < currentPokemon.moves.length; j++) {
+        const move = currentPokemon.moves[j].move.name;
+        container.innerHTML += `
+            ${move}<br>
+        `;
+    }
+
+}
+
 
 function renderEvolutionChain(i) {
     let cleanContainer1 = document.getElementById('pokeAboutContainer');
     let cleanContainer2 = document.getElementById('pokeStatsContainer');
+    let cleanContainer3 = document.getElementById('pokeMovesContainer');
     let container = document.getElementById('pokeEvoContainer');
 
 
 
     cleanContainer1.classList.add('d-none');
     cleanContainer2.classList.add('d-none');
+    cleanContainer3.classList.add('d-none');
     container.classList.remove('d-none');
-    
+
     cleanContainer1.innerHTML = '';
     cleanContainer2.innerHTML = '';
+    cleanContainer3.innerHTML = '';
     container.innerHTML = '';
     container.innerHTML = renderEvoBoxHTML();
     // container.innerHTML += `
@@ -196,7 +228,7 @@ function renderEvoBoxHTML() {
     let maxEvoName = currentEvoMaxInfo.name.charAt(0).toUpperCase() + currentEvoMaxInfo.name.slice(1);
     let midEvoName = currentEvoMidInfo.name.charAt(0).toUpperCase() + currentEvoMidInfo.name.slice(1);
     let minEvoName = currentEvoMinInfo.name.charAt(0).toUpperCase() + currentEvoMinInfo.name.slice(1);
-    
+
     return `
     <div class="pokeEvoBox">
         ${maxEvoName}<br>
@@ -217,18 +249,21 @@ function renderEvoBoxHTML() {
 function renderPokeCardStats(i) {
     let cleanContainer1 = document.getElementById('pokeAboutContainer');
     let cleanContainer2 = document.getElementById('pokeEvoContainer');
+    let cleanContainer3 = document.getElementById('pokeMovesContainer');
     let container = document.getElementById('pokeStatsContainer');
     let poke = allPokemon[i];
 
-        cleanContainer1.classList.add('d-none');
-        cleanContainer2.classList.add('d-none');
-        container.classList.remove('d-none');
+    cleanContainer1.classList.add('d-none');
+    cleanContainer2.classList.add('d-none');
+    cleanContainer3.classList.add('d-none');
+    container.classList.remove('d-none');
 
-        cleanContainer1.innerHTML = '';
-        cleanContainer2.innerHTML = '';
-        container.innerHTML = '';
+    cleanContainer1.innerHTML = '';
+    cleanContainer2.innerHTML = '';
+    cleanContainer3.innerHTML = '';
+    container.innerHTML = '';
 
-    
+
     for (let j = 0; j < poke.stats.length; j++) {
         const pokeStats = poke.stats[j].base_stat;
         const pokeStatsName = poke.stats[j].stat.name.charAt(0).toUpperCase() + poke.stats[j].stat.name.slice(1);
@@ -243,19 +278,19 @@ function renderPokeCardStats(i) {
 
 
 async function offSet() {
-    
-    if(!lockFunction) {
-    let pageBottom = 100;
-    let viewerHeight = document.body.scrollHeight;
-    let currentScrollPosition = window.scrollY + window.innerHeight;
-    lockFunction = true;
 
-        if(pokeLoadLoop <= 140) {
-            if(currentScrollPosition + pageBottom > viewerHeight) {
-               await loadPokemon();
-            } 
-        }   else {
-                console.log('STOP');
+    if (!lockFunction) {
+        let pageBottom = 100;
+        let viewerHeight = document.body.scrollHeight;
+        let currentScrollPosition = window.scrollY + window.innerHeight;
+        lockFunction = true;
+
+        if (pokeLoadLoop <= 140) {
+            if (currentScrollPosition + pageBottom > viewerHeight) {
+                await loadPokemon();
+            }
+        } else {
+            console.log('STOP');
         }
         lockFunction = false;
 
@@ -389,7 +424,7 @@ function pokeCardTypeBgr(i, j) {
 
 
 function determineBgrColor(i, j) {
-    let typeBox = document.getElementById('pokeTypeBox' +i + j);
+    let typeBox = document.getElementById('pokeTypeBox' + i + j);
     if (typeBox.innerHTML == 'Grass') {
         typeBox.style.background = 'rgb(43 255 49)';
     } else if (typeBox.innerHTML == 'Fire') {
@@ -448,6 +483,7 @@ function renderPokeCardHTML(i, poke, pokeNameUp) {
                 </div>
             </div>
                 <img class="pokeCardPokeImg" src="${poke.sprites.other.dream_world.front_default}">
+                <p>${currentSpeciesInfo.flavor_text_entries[0].flavor_text}
         <div id="pokeCardBottomBox" class="pokeCardBottomBox">
             <nav onclick="return false;" class="navbar pokeCardNavbar navbar-expand-lg navbar-light bg-light">
                 <a class="navbar-brand" href="#">Pokeinfo</a>
@@ -460,12 +496,14 @@ function renderPokeCardHTML(i, poke, pokeNameUp) {
                         <a onclick="renderPokeAbout(${i})" class="nav-item nav-link" href="#">About<span class="sr-only">(current)</span></a>
                         <a onclick="renderPokeCardStats(${i})" class="nav-item nav-link" href="#">Base Stats</a>
                         <a onclick="renderEvolutionChain(${i})" class="nav-item nav-link" href="#">Evolution</a>
+                        <a onclick="renderPokeMoves()" class="nav-item nav-link" href="#">Moves</a>
                     </div>
                 </div>
             </nav>
             <div class="pokeAboutContainer" id="pokeAboutContainer"></div>
             <div class="pokeStatsContainer d-none" id="pokeStatsContainer"></div>
             <div class="pokeEvoContainer d-none" id="pokeEvoContainer"></div>
+            <div class="pokeMovesContainer d-none" id="pokeMovesContainer"></div>
         </div>
     </div>
 
