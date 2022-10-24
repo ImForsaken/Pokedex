@@ -37,6 +37,13 @@ async function loadPokemon() {
     // console.log('loaded Pokemon', currentPokemon);
 }
 
+async function getPokemonSpeciesURL(i) {
+    const url = `https://pokeapi.co/api/v2/pokemon-species/${i}`;
+    let response = await fetch(url);
+    let currentPokemonSpecies = await response.json();
+    allPokemonSpecies.push(currentPokemonSpecies);
+    console.log('All Species', allPokemonSpecies);
+}
 
 async function getAllPokeDataTest(i) {
     testPoke = [];
@@ -106,33 +113,6 @@ async function getAllPokeDataTest(i) {
 
     }
 
-
-
-
-    //max evo und mid evo sind die gleichen paths. Code changen und in einen fluss bekommen. Man könnte alles in einer if else if abfrage rergeln statt einzelne if sections zu coden
-    // if (evolutionChainInfo.chain.evolves_to[0].evolves_to[0].species.hasOwnProperty('name')) {
-    //     let maxEvo = evolutionChainInfo.chain.evolves_to[0].evolves_to[0].species.name;
-    //     console.log('Dritte Entwicklung 3', maxEvo);
-    // } else if (evolutionChainInfo.chain.evolves_to[0].species.hasOwnProperty('name')) {
-    //     let maxEvo = evolutionChainInfo.chain.evolves_to[0].species.name;
-    //     console.log('Dritte Entwicklung', maxEvo);
-    // } else {
-    //     console.log('Keine dritte Entwicklung');
-    // }
-
-
-    // if (evolutionChainInfo.chain.evolves_to[0].species.name) {
-    //     let midEvo = evolutionChainInfo.chain.evolves_to[0].species.name;
-    //     console.log('ChainJSONMidEvo 2', midEvo);
-    // } else {
-    //     console.log('Keine Zweite entwicklung');
-    // }
-    // if (evolutionChainInfo.chain.species.name) {
-    //     let minEvo = evolutionChainInfo.chain.species.name;
-    //     console.log('ChainJSONMinEvo 2', minEvo);
-    // } else {
-    //     console.log('Keine erste Entwicklung')
-    // }
 }
 
 // renders Pokecard about information
@@ -153,8 +133,7 @@ function renderPokeAbout(i) {
     cleanContainer3.innerHTML = '';
     container.innerHTML = '';
 
-    container.innerHTML = renderPokeStatsHTML(poke);
-
+    container.innerHTML = renderPokeAboutHTML(poke);
 }
 
 
@@ -311,18 +290,12 @@ function manageDataprocess(i) {
 }
 
 
-async function getPokemonSpeciesURL(i) {
-    const url = `https://pokeapi.co/api/v2/pokemon-species/${i}`;
-    let response = await fetch(url);
-    let currentPokemonSpecies = await response.json();
-    allPokemonSpecies.push(currentPokemonSpecies);
-    console.log('All Species', allPokemonSpecies);
-}
 
 
-function openPokeCard(i) {
+
+async function openPokeCard(i) {
     let container = document.getElementById('fullPokemonCard');
-    getAllPokeDataTest(i);
+    await getAllPokeDataTest(i);
     i--;
     let pokeNameUp = allPokemon[i].name.charAt(0).toUpperCase() + allPokemon[i].name.slice(1);
     let poke = allPokemon[i];
@@ -483,7 +456,7 @@ function renderPokeCardHTML(i, poke, pokeNameUp) {
                 </div>
             </div>
                 <img class="pokeCardPokeImg" src="${poke.sprites.other.dream_world.front_default}">
-                <p>${currentSpeciesInfo.flavor_text_entries[0].flavor_text}
+                <div class="pokeMainText">${currentSpeciesInfo.flavor_text_entries[0].flavor_text}</div>
         <div id="pokeCardBottomBox" class="pokeCardBottomBox">
             <nav onclick="return false;" class="navbar pokeCardNavbar navbar-expand-lg navbar-light bg-light">
                 <a class="navbar-brand" href="#">Pokeinfo</a>
@@ -511,7 +484,7 @@ function renderPokeCardHTML(i, poke, pokeNameUp) {
 }
 
 
-function renderPokeStatsHTML(poke) {
+function renderPokeAboutHTML(poke) {
     return `
     <div class="headAboutContainer" id="headAboutContainer">
         <div class="headAboutBoxLeft" id="headAboutBoxLeft">
