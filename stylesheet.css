@@ -39,6 +39,17 @@
     justify-content: center;
 }
 
+.d-justySA {
+    display: flex;
+    justify-content: space-around;
+}
+
+.d-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .hideOverflow {
     overflow: hidden;
 }
@@ -54,7 +65,7 @@
     display: unset;
 }
 
-.width-100 {
+.w100 {
     width: 100%;
 }
 
