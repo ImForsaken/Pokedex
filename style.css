@@ -5,6 +5,10 @@ body {
     padding: 0;
 }
 
+p {
+    margin-bottom: unset;
+}
+
 .fullPokemonCard {
     position: fixed;
     top: 0;
@@ -168,16 +172,20 @@ body {
 
 .pokeCardContainer {
     position: relative;
-    height: 80%;
-    width: 60%;
+    height: 80vh;
+    width: 60vw;
     border-radius: 30px;
     overflow: hidden;
-    background-color: white;
+    display: flex;
+    flex-direction: column;
 }
 
 .pokeCardHeadBox {
+    background: url(./img/PokeBackground.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
     height: 55%;
-    padding: 10px;
+    padding: 5px;
     color: white;
 }
 
@@ -203,12 +211,22 @@ body {
 }
 
 .pokeCardIdent {
+    margin-bottom: 5px;
     display: flex;
     justify-content: space-around;
 }
 
 .pokeCardIdent p {
     font-weight: bold;
+}
+
+.pokeCardIdent h2 {
+    border: 3px solid rgb(114, 114, 114);
+    border-radius: 10px;
+    background-color: black;
+    margin: 0;
+    height: fit-content;
+    padding: 5px;
 }
 
 .pokeCardTypes {
@@ -225,16 +243,27 @@ body {
 }
 
 
+.pokeImagesContainer {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
 
 .pokeCardPokeImg {
-    /* position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 325px;
-    margin: auto; */
-    max-height: 225px;
-    max-width: 225px;
+    max-height: 220px;
+    min-height: 220px;
+    max-width: 220px;
+    min-width: 220px;
+    z-index: 1;
+}
+
+.pokeCardPokeTypeImg {
+    border: 1px solid black;
+    border-radius: 100%;
+    padding: 5px;
+    height: 80px;
+    width: 80px;
+    transition: 200ms all;
 }
  
 .pokeMainText {
@@ -254,10 +283,13 @@ body {
 .pokeCardBottomBox {
     display: flex;
     flex-direction: column;
+    width: 100%;
     height: 45%;
-    padding: 10px;
-    border-radius: 25px 25px 0px 0px;
+    border-radius: 25px 25px 30px 30px;
     background-color: white;
+    flex: 1;
+    position: absolute;
+    top: 49.5%;
 }
 
 .pokeCardNavbar {
@@ -284,7 +316,9 @@ body {
 
 .pokeAboutContainer {
     height: 100%;
-    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
 }
 
 .headAboutContainer {
@@ -293,10 +327,17 @@ body {
 }
 
 .pokeAboutChildBox {
-    width: 50%;
     justify-content: space-between;
 }
 
+
+.pokeStatsContainer {
+    height: 80%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
 
 
 .pokeStats {
@@ -316,7 +357,7 @@ body {
 
 .pokeEvoContainer {
     height: 100%;
-    margin-top: 10px;
+    /* margin-top: 10px; */
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -334,10 +375,35 @@ body {
     max-width: 150px;
 }
 
+.pokeSingleBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-weight: bold;
+}
+
+.pokeSingleBox img {
+    width: 60%;
+    height: 60%;
+}
+
 .pokeMovesContainer {
     height: 100%;
+    padding: 10px;
     overflow: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    color: white;
 }
+
+.pokeMoveTag {
+    background-color: black;
+    padding: 5px;
+    border-radius: 10px;
+}
+
 @media (max-width: 992px) {
     .navbar-toggler {
         display: unset;

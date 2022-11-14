@@ -10,19 +10,44 @@ let evolutionChainMidSpeciesInfo = [];
 let evolutionChainMinSpeciesInfo = [];
 let currentEvoMaxInfo;
 let currentEvoMidInfo;
-let currentEvoMinInfo;
+let currentEvoMinInfo ;
 let pokeLoadLoop = 20;
 let pokeLoadLoopNow = 1;
 let maxPoke = 151;
 let lockFunction = false;
 //${currentSpeciesInfo.is_legendary}
-let allPokemonNames
+let downloadedPokemonData = [];
+setURL('https://kevin-herbst.developerakademie.net/sbePokedex/smallest_backend_ever');
 
 
 
-function downloadSearchbarPokemonData() {
+//ALLE POKEMON KLASSEN
 
-}
+/**let pokemonOverlayBorder = [
+    {
+        normal: '#',
+        fire: '#',
+        water: '#',
+        grass: '#',
+        electric: '#',
+        ice: '#',
+        fighting: '#',
+        poison: '#',
+        ground: '#',
+        flying: '#',
+        psychic: '#',
+        bug: '#',
+        rock: '#',
+        ghost: '#',
+        dark: '#',
+        dragon: '#',
+        steel: '#',
+        fairy: '#',
+    }
+];
+ */
+
+
 
 //fetches the Data of specific Pokemon
 async function getListPokemonData() {
@@ -43,6 +68,19 @@ async function getListPokemonData() {
 
     // console.log('loaded Pokemon', currentPokemon);
 }
+ //Max pokemon hits 1154
+// async function getAllPokemonForSearchbar() {
+//     const url = `https://pokeapi.co/api/v2/pokemon/?limit=1154`;
+//     let response = await fetch(url);
+//     let allPokemons = await response.json();
+//     searchbarPokemonHits.push(allPokemons);
+//     console.log('Searchbar hits', searchbarPokemonHits);
+
+// }
+
+
+
+
 
 async function getPokemonSpeciesURL(i) {
     const url = `https://pokeapi.co/api/v2/pokemon-species/${i}`;
@@ -54,10 +92,16 @@ async function getPokemonSpeciesURL(i) {
 
 
 
+//tracks down the Edition information of selected pokemon
+async function getPokeEditionInfo() {
+    const url = `${currentPokemon.forms[0].url}`;
+    let pokeUrl = await fetch(url);
+    let currenPokeInfo = await pokeUrl.json();
+    currentPokemonEditionInfo.push(currenPokeInfo);
+    
+}
 
-
-
-
+//Get all URLS from selected pokemon for all information that will displayed
 async function getSelectedPokemonUrls(i) {
     currentPokemonInfo = [];
     currentSpeciesInfo = [];
@@ -80,124 +124,73 @@ async function getSelectedPokemonUrls(i) {
     console.log('currentPokemonInfo', currentSpeciesInfo);
     console.log('ChainJSON', evolutionChainInfo);
 
-
-    if (0 in evolutionChainInfo.chain.evolves_to[0].evolves_to) {
-        await getMaxEvolutionDetails();
-    }
-    if ('species' in evolutionChainInfo.chain.evolves_to[0]) {
-        await getMidEvolutionDetails();
-    }
     if ('name' in evolutionChainInfo.chain.species) {
         await getMinEvolutionDetails();
-        
     }
-
-}
-
-
-
-function checkIfLevelUpTriggerExist() {
-    if (evolutionChainInfo.chain.evolves_to[0].evolution_details[0].min_level == null) {
-        let itemTrigger = evolutionChainInfo.chain.evolves_to[0].evolution_details[0].item.name;
-        // let triggerBox = document.getElementById('levelTrigger');
-        // triggerBox.innerHTML = '';
-        // triggerBox.innerHTML = `
-        //     <b id="levelTrigger">Level up with: ${itemTrigger}</b>
-        // `;
-
-
+    if (evolutionChainInfo.chain.evolves_to.length > 0) {
+        await getMidEvolutionDetails();
+        if (evolutionChainInfo.chain.evolves_to[0].evolves_to.length > 0) {
+            await getMaxEvolutionDetails();
+        }
     }
 }
 
-function renderThreeEvoBoxHTML(maxEvoName, midEvoName, minEvoName, levelTrigger1, levelTrigger2) {
-    return `
-    <div class="pokeEvoBox">
-        ${minEvoName}<br>
-        <img src="${currentEvoMinInfo[0].sprites.other.dream_world.front_default}">
-    </div>  
-    <div class="d-column">
-        <b id="levelTrigger">Level: ${levelTrigger1}</b>
-        <img src="./img/levelUp.png">
-    </div>
-    <div class="pokeEvoBox">
-        ${midEvoName}<br>
-        <img src="${currentEvoMidInfo[0].sprites.other.dream_world.front_default}">
-    </div> 
-    <div class="d-column">
-        <b>Level: ${levelTrigger2}</b>
-        <img src="./img/levelUp.png">
-    </div>
-    <div class="pokeEvoBox">
-        ${maxEvoName}<br>
-        <img src="${currentEvoMaxInfo[0].sprites.other.dream_world.front_default}">
-    </div>   
-    `;
-}
 
-
-function renderTwoEvoBoxHTML(midEvoName, minEvoName, levelTrigger1) {
-    return `
-    <div class="pokeEvoBox">
-        ${minEvoName}<br>
-        <img src="${currentEvoMinInfo[0].sprites.other.dream_world.front_default}">
-    </div>  
-    <div class="d-column">
-        <b id="levelTrigger">Level: ${levelTrigger1}</b>
-        <img src="./img/levelUp.png">
-    </div>
-    <div class="pokeEvoBox">
-        ${midEvoName}<br>
-        <img src="${currentEvoMidInfo[0].sprites.other.dream_world.front_default}">
-    </div> 
-    `;
-}
-
-
-function renderOneEvoBoxHtml(minEvoName) {
-    return `
-    <div class="pokeEvoBox">
-        ${minEvoName}<br>
-        <img src="${currentEvoMinInfo[0].sprites.other.dream_world.front_default}">
-    </div>  
-    `;
-}
 
 //renders Pokemon evolution names, images and levelup.
 function setEvoBoxInfo() {
-    //TODO level up arrows einfügen um die Level trigger anzuzeigen  
 
-
-    if (currentEvoMaxInfo.length > 0) {
+    if (currentEvoMaxInfo && currentEvoMaxInfo.length > 0) {
         let maxEvoName =  currentEvoMaxInfo[0].name.charAt(0).toUpperCase() + currentEvoMaxInfo[0].name.slice(1);
         let midEvoName = currentEvoMidInfo[0].name.charAt(0).toUpperCase() + currentEvoMidInfo[0].name.slice(1);
         let minEvoName = currentEvoMinInfo[0].name.charAt(0).toUpperCase() + currentEvoMinInfo[0].name.slice(1);
-        let levelTrigger1 = evolutionChainInfo.chain.evolves_to[0].evolution_details[0].min_level;
-        let levelTrigger2 = evolutionChainInfo.chain.evolves_to[0].evolves_to[0].evolution_details[0].min_level;
+
+        checkSecondLevelUpTrigger();
+        checkThirdLevelUptrigger();
         // console.log(maxEvoName, midEvoName, minEvoName)
         return renderThreeEvoBoxHTML(maxEvoName, midEvoName, minEvoName, levelTrigger1, levelTrigger2);
 
-    } else if (currentEvoMidInfo) {
+    }
+    if (currentEvoMidInfo && currentEvoMidInfo.length > 0) {
         let midEvoName = currentEvoMidInfo[0].name.charAt(0).toUpperCase() + currentEvoMidInfo[0].name.slice(1);
         let minEvoName = currentEvoMinInfo[0].name.charAt(0).toUpperCase() + currentEvoMinInfo[0].name.slice(1);
-        let levelTrigger1 = evolutionChainInfo.chain.evolves_to[0].evolution_details[0].min_level;
+        checkSecondLevelUpTrigger(); 
         // console.log( midEvoName, minEvoName)
-        return renderTwoEvoBoxHTML(midEvoName, minEvoName, levelTrigger1)
-
-    } else if (currentEvoMinInfo) {
+        return renderTwoEvoBoxHTML(midEvoName, minEvoName, levelTrigger1);
+    }
+    if (currentEvoMinInfo && currentEvoMinInfo.length > 0) {
         let minEvoName = currentEvoMinInfo[0].name.charAt(0).toUpperCase() + currentEvoMinInfo[0].name.slice(1);
         // console.log(minEvoName)
         return renderOneEvoBoxHtml(minEvoName);
     }
 }
 
-async function getPokeEditionInfo() {
-    const url = `${currentPokemon.forms[0].url}`;
-    let pokeUrl = await fetch(url);
-    let currenPokeInfo = await pokeUrl.json();
-    currentPokemonEditionInfo.push(currenPokeInfo);
-    
+
+function checkSecondLevelUpTrigger() {
+
+ //TODO ANSCHAUEN -- POKEMON Trigger werden nicht returnt
+    if (evolutionChainInfo.chain.evolves_to[0].evolution_details[0].min_level) {
+        return levelTrigger1 = evolutionChainInfo.chain.evolves_to[0].evolution_details[0].min_level;
+    } 
+    else if (evolutionChainInfo.chain.evolves_to[0].evolution_details[0].item) {
+        return levelTrigger1 = evolutionChainInfo.chain.evolves_to[0].evolution_details[0].item.name;
+    } else {
+        console.log('KEIN TRIGGER GEFUNDEN');
+        return levelTrigger1 = 'No Information';
+    }
 }
 
+function checkThirdLevelUptrigger() {
+    if (evolutionChainInfo.chain.evolves_to[0].evolves_to[0].evolution_details[0].min_level) {
+        return levelTrigger2 = evolutionChainInfo.chain.evolves_to[0].evolves_to[0].evolution_details[0].min_level;
+    } else if (evolutionChainInfo.chain.evolves_to[0].evolves_to[0].evolution_details[0].item) {
+        return levelTrigger2 = evolutionChainInfo.chain.evolves_to[0].evolves_to[0].evolution_details[0].item.name;
+    } else if (evolutionChainInfo.chain.evolves_to[0].evolves_to[0].evolution_details[0].trigger.name) {
+        return levelTrigger2 = evolutionChainInfo.chain.evolves_to[0].evolves_to[0].evolution_details[0].trigger.name;
+    } else {
+        return levelTrigger2 = 'No Information'
+    }
+}
 
 async function getMaxEvolutionDetails() {
     currentEvoMaxInfo = [];
@@ -210,8 +203,7 @@ async function getMaxEvolutionDetails() {
     let maxEvoId = evolutionChainMaxSpeciesInfo[0].id;
     let url = `https://pokeapi.co/api/v2/pokemon/${maxEvoId}`;
     let response = await fetch(url);
-    let currentEvoMaxJson = await response.json();
-    currentEvoMaxInfo.push(currentEvoMaxJson);
+    currentEvoMaxInfo.push(await response.json());
     console.log('ID 3', currentEvoMaxInfo);
 }
 
@@ -226,8 +218,7 @@ async function getMidEvolutionDetails() {
     let midEvoId = evolutionChainMidSpeciesInfo[0].id;
     let url = `https://pokeapi.co/api/v2/pokemon/${midEvoId}`;
     let response = await fetch(url);
-    let currentEvoMidJson = await response.json();
-    currentEvoMidInfo.push(currentEvoMidJson);
+    currentEvoMidInfo.push(await response.json());
     console.log('ID 2', currentEvoMidInfo);
 }
 
@@ -243,8 +234,7 @@ async function getMinEvolutionDetails() {
     let minEvoId = evolutionChainMinSpeciesInfo[0].id;
     let url = `https://pokeapi.co/api/v2/pokemon/${minEvoId}`;
     let response = await fetch(url);
-    let currentEvoMinJson = await response.json();
-    currentEvoMinInfo.push(currentEvoMinJson);
+    currentEvoMinInfo.push(await response.json());
     console.log('ID 1', currentEvoMinInfo);
 }
 
@@ -268,7 +258,7 @@ function renderPokeMoves() {
     for (let j = 0; j < currentPokemon.moves.length; j++) {
         const move = currentPokemon.moves[j].move.name;
         container.innerHTML += `
-            ${move}<br>
+            <p class="pokeMoveTag">${move}<p>
         `;
     }
 }
@@ -307,13 +297,18 @@ function renderPokeCardStats(i) {
     for (let j = 0; j < poke.stats.length; j++) {
         const pokeStats = poke.stats[j].base_stat;
         const pokeStatsName = poke.stats[j].stat.name.charAt(0).toUpperCase() + poke.stats[j].stat.name.slice(1);
+        const pokeStatsWidth = Math.round(pokeStats / 2);
 
         container.innerHTML += `
-            <div id="pokeStats${j}" class="d-flex pokeStats"><p class="pokeStatsP1"><b>${pokeStatsName}:</p></b></div>
+                <p class="pokeStatsP1"><b>${pokeStatsName}:</b></p>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-label="Animated striped example" aria-valuenow="${pokeStats}" aria-valuemin="0" aria-valuemax="200" style="width: ${pokeStatsWidth}%"><b>${pokeStats}</b></div>
+                </div>
         `;
-        document.getElementById('pokeStats' + j).innerHTML += `<p class="pokeStatsP2">${pokeStats}</p>`
     }
 }
+
+
 
 
 
@@ -347,6 +342,7 @@ function manageDataprocess(i) {
     pokeName.innerHTML = pokeNameUp;
     pokeNumber.innerHTML = currentPokemon.id
     pokeImg.src = currentPokemon.sprites.other.dream_world.front_default;
+    
 }
 
 
@@ -365,33 +361,36 @@ async function openPokeCard(i) {
     renderPokeAbout(i);
 }
 
-
+//gets Species URL from specific pokemon
 async function getSpeciesUrl() {
     const PokespeciesURL = currentPokemonInfo[0].species.url;
     let SpeciesUrlResponse = await fetch(PokespeciesURL);
     currentSpeciesInfo = await SpeciesUrlResponse.json();
 }
-
+//gets Evolutionchain URL from specific pokemon
 async function getEvolutionUrl() {
     const evolutionChainUrl = currentSpeciesInfo.evolution_chain.url;
     let evolutionResponse = await fetch(evolutionChainUrl);
     evolutionChainInfo = await evolutionResponse.json();
 }
 
-
+//gets the pokemon Type for the listed pokemon
 function pokeListTypeProcess(Pokemon, i) {
     let typeContainer = document.getElementById(`pokeTypeContainer${i}`);
     i--;
     for (let j = 0; j < Pokemon.types.length; j++) {
         const pokeType = Pokemon.types[j].type.name.charAt(0).toUpperCase() + Pokemon.types[j].type.name.slice(1);
         console.log(pokeType);
-        typeContainer.innerHTML += `
-        <div class="pokeTypeBox" id="pokeTypeBox${i}${j}">${pokeType}</div>
-        `;
-        determineBgrColor(i, j);
+        typeContainer.innerHTML += `<div class="pokeTypeBox" id="pokeTypeBox${i}${j}">${pokeType}</div>`;
+
+        let typeBox = document.getElementById('pokeTypeBox' + i + j).innerHTML;
+        let typeBoxContainer = document.getElementById('pokeTypeBox' + i + j);
+        typeBoxContainer.style.background = getTypeBackgroundcolors(typeBox);
     }
 }
 
+
+//gets Type names and place information as <p>
 function pokeCardTypeProcess(i) {
     for (let j = 0; j < allPokemon[i].types.length; j++) {
         const pokeTypeName = allPokemon[i].types[j].type.name;
@@ -400,90 +399,98 @@ function pokeCardTypeProcess(i) {
         typeBox.innerHTML += `
         <p id="pokeTypeBox${i}${j}" class="pokeTypeBox">${pokeTypeUp}</p>
         `;
-        pokeCardTypeBgr(i, j);
+        setPokeCardBackgrounds(i, j);
     }
 }
 
-function chooseCardTypeBGR(typeBox) {
-    if (typeBox.innerHTML == 'Grass') {
-        typeBox.style.background = 'rgb(43 255 49)';
-    } else if (typeBox.innerHTML == 'Fire') {
-        typeBox.style.background = 'red';
-    } else if (typeBox.innerHTML == 'Water') {
-        typeBox.style.background = 'blue';
-    } else if (typeBox.innerHTML == 'Poison') {
-        typeBox.style.background = 'purple';
-    } else if (typeBox.innerHTML == 'Flying') {
-        typeBox.style.background = "rgb(0 144 247)";
-    } else if (typeBox.innerHTML == 'Normal') {
-        typeBox.style.background = "rgb(114 35 57)";
-    } else if (typeBox.innerHTML == 'Bug') {
-        typeBox.style.background = "green";
-    }
+//Sets the Background of type and pokemon box of an displayed pokemoncard
+function setPokeCardBackgrounds(i, j) {
+    let firstTypeBox = document.getElementById('pokeTypeBox' + i + 0);
+    let typeBox = document.getElementById('pokeTypeBox' + i + j);
+    let typeIcon = document.getElementById('pokeCardPokeTypeImg');
+    // let typeBoxMain = document.getElementById('pokeTypeBox' + i + 0);
+    // let container = document.getElementById('pokeCardContainer');
+    typeBox.style.backgroundColor = getTypeBackgroundcolors(typeBox.innerHTML);
+    typeIcon.src = getPokemonTypeIcon(firstTypeBox.innerHTML);
+    typeIcon.style.backgroundColor = getPokemonBackgroundcolor(firstTypeBox.innerHTML);    
 }
 
-function chooseCardBGR(typeBoxMain, container) {
-    if (typeBoxMain.innerHTML == 'Grass') {
-        container.style.background = 'rgb(9 155 13)';
-    } else if (typeBoxMain.innerHTML == 'Fire') {
-        container.style.background = 'red';
-    } else if (typeBoxMain.innerHTML == 'Water') {
-        container.style.background = 'blue';
-    } else if (typeBoxMain.innerHTML == 'Poison') {
-        container.style.background = 'purple';
-    } else if (typeBoxMain.innerHTML == 'Flying') {
-        container.style.background = "rgb(0 144 247)";
-    } else if (typeBoxMain.innerHTML == 'Normal') {
-        container.style.background = "rgb(114 35 57)";
-    } else if (typeBoxMain.innerHTML == 'Bug') {
-        container.style.background = "green";
-    }
-}
 // SPäter einfügen um backgrounds zu deciden
-// function getBackgroundcolors(element) {
-//     return {
-//         fire: 'red',
-//         water: 'blue',
-//         grass: 'green',
-//         poison: 'purple',
-//         fyling: "rgb(0 144 247)",
-//         normal: 'rgb(114 35 57)',
-//         bug: 'green'
-//     }[element.toLowerCase()] || 'white'
-// }
+function getTypeBackgroundcolors(element) {
+    return {
+        fire: '#FBA54C',
+        grass: '#5FBD58',
+        water: '#539DDF',
+        poison: '#B763CF',
+        flying: '#A1BBEC',
+        normal: '#A0A29F',
+        bug: '#92BC2C',
+        dark: '#595761',
+        dragon: '#0C69C8',
+        electric: '#F2D94E',
+        fairy: '#EE90E6',
+        fighting: '#D3425F',
+        ghost: '#5F6DBC',
+        ground: '#D3425F',
+        ice: '#75D0C1',
+        psychic: '#FA8581',
+        rock: '#C9BB8A',
+        steel: '#5695A3'
 
-function pokeCardTypeBgr(i, j) {
-    let typeBox = document.getElementById('pokeTypeBox' + i + j);
-    let typeBoxMain = document.getElementById('pokeTypeBox' + i + 0);
-    let container = document.getElementById('pokeCardContainer');
-    chooseCardTypeBGR(typeBox);
-    chooseCardBGR(typeBoxMain, container);
-
+    }[element.toLowerCase()] || 'white'
 }
 
 
+function getPokemonBackgroundcolor(element) {
+    return {
+        fire: '#f1800b',
+        grass: '#2ec723',
+        water: '#2184dd',
+        poison: '#a625cb',
+        flying: '#578ae9',
+        normal: '#afbda9',
+        bug: '#92c90d',
+        dark: '#595761',
+        dragon: '#1a446e',
+        electric: '#f7d414',
+        fairy: '#ef3de0',
+        fighting: '#cf0c33',
+        ghost: '#4051b5',
+        ground: '#cf173c',
+        ice: '#31c1a9',
+        psychic: '#d54f4a',
+        rock: '#cdb666',
+        steel: '#4197ab'
 
-
-
-
-function determineBgrColor(i, j) {
-    let typeBox = document.getElementById('pokeTypeBox' + i + j);
-    if (typeBox.innerHTML == 'Grass') {
-        typeBox.style.background = 'rgb(43 255 49)';
-    } else if (typeBox.innerHTML == 'Fire') {
-        typeBox.style.background = 'red';
-    } else if (typeBox.innerHTML == 'Water') {
-        typeBox.style.background = 'blue';
-    } else if (typeBox.innerHTML == 'Poison') {
-        typeBox.style.background = 'purple';
-    } else if (typeBox.innerHTML == 'Flying') {
-        typeBox.style.background = "rgb(0 144 247)";
-    } else if (typeBox.innerHTML == 'Normal') {
-        typeBox.style.background = "rgb(114 35 57)";
-    } else if (typeBox.innerHTML == 'Bug') {
-        typeBox.style.background = "green";
-    }
+    }[element.toLowerCase()] || 'white'
 }
+
+
+function getPokemonTypeIcon(element) {
+    return {
+        fire: './img/fire.svg',
+        grass: './img/grass.svg',
+        water: './img/water.svg',
+        poison: './img/poison.svg',
+        flying: './img/flying.svg',
+        normal: './img/normal.svg',
+        bug: './img/bug.svg',
+        dark: './img/dark.svg',
+        dragon: './img/dragon.svg',
+        electric: './img/electric.svg',
+        fairy: './img/fairy.svg',
+        fighting: './img/fighting.svg',
+        ghost: './img/ghost.svg',
+        ground: './img/ground.svg',
+        ice: './img/ice.svg',
+        psychic: './img/psychic.svg',
+        rock: './img/rock.svg',
+        steel: './img/steel.svg'
+
+    }[element.toLowerCase()] || 'white'
+}
+
+
 
 function clearAndDisplayCardContainer(main, cc1, cc2, cc3) {
 
@@ -525,7 +532,7 @@ function renderPokemonCard(i) {
 
 
 
-
+//TODO MAYBE FOR LATER                 <img id="pokeCardLikeImg" class="pokeCardLikeImg" src="./img/notLiked.png">
 
 function renderPokeCardHTML(i, poke, pokeNameUp) {
 
@@ -534,21 +541,22 @@ function renderPokeCardHTML(i, poke, pokeNameUp) {
         <div class="pokeCardHeadBox">
             <div class="pokeCardInteraction">
                 <button class="pokeCardBackBtn" onclick="closePokeCard()"></button>
-                <img id="pokeCardLikeImg" class="pokeCardLikeImg" src="./img/notLiked.png">
             </div>
             <div id="pokeCardIdent" class="pokeCardIdent">
                 <div class="pokeTag">
                     <h1><b>${pokeNameUp}</b></h1>
-                <div id="pokeCardTypes" class="pokeCardTypes">
+                    <div id="pokeCardTypes" class="pokeCardTypes"></div>
                 </div>
+                    <h2>#000${i + 1}</h2>
+            </div>
+            <div class="pokePreview">
+                <div class="pokeImagesContainer">
+                    <img id="pokeCardPokeTypeImg" class="pokeCardPokeTypeImg" src="">
+                    <img id="pokeCardPokeImg" class="pokeCardPokeImg" src="${randomShinyEvent(poke)}">
                 </div>
-                    <p>#000${i + 1}</p>
-                </div>
-                <div class="pokePreview">
-                <img id="pokeCardPokeImg" class="pokeCardPokeImg" src="${randomShinyEvent(poke)}">
                 <div class="pokeMainText">${currentSpeciesInfo.flavor_text_entries[1].flavor_text.replace('\f', ' ')}</div>
             </div>
-            </div>
+        </div>
         <div id="pokeCardBottomBox" class="pokeCardBottomBox">
             <nav onclick="return false;" class="navbar pokeCardNavbar navbar-expand-lg navbar-light bg-light">
                 <a class="navbar-brand" href="#">Pokeinfo</a>
@@ -560,7 +568,7 @@ function renderPokeCardHTML(i, poke, pokeNameUp) {
                     <div class="navbar-nav">
                         <a onclick="renderPokeAbout(${i})" class="nav-item nav-link" href="#">About<span class="sr-only">(current)</span></a>
                         <a onclick="renderPokeCardStats(${i})" class="nav-item nav-link" href="#">Base Stats</a>
-                        <a onclick="renderEvolutionChain(${i})" class="nav-item nav-link" href="#">Evolution</a>
+                        <a onclick="renderEvolutionChain()" class="nav-item nav-link" href="#">Evolution</a>
                         <a onclick="renderPokeMoves()" class="nav-item nav-link" href="#">Moves</a>
                     </div>
                 </div>
@@ -589,30 +597,106 @@ function renderPokeAboutHTML(poke) {
             <div class="pokeAboutChildBox d-flex" id="pokeAboutAbilities">
                 <p><b>Abilities:</b></p>
             </div>
+            <div class="pokeAboutChildBox d-flex" id="pokeAboutEdition">
+                <p><b>Edition:</b></p>
+            </div>
+            <div class="pokeAboutChildBox d-flex" id="pokeAboutEdition">
+                <p><b>Grow rate:</b></p>
+            </div>
+            <div class="pokeAboutChildBox d-flex" id="pokeAboutEdition">
+                <p><b>Legendary status:</b></p>
+            </div>
         </div>
         <div class="headAboutBoxRight">
             <p>${(poke.height / 10)} M</p>
             <p>${(poke.weight / 10)} KG</p>
             <p>${poke.abilities[0].ability.name}, ${getAbilities(poke)}</p>
+            <p>${currentPokemonEditionInfo[0].version_group.name}</p>
+            <p>${currentSpeciesInfo.growth_rate.name}</p>
+            <p>${checkLegendaryStatus(currentSpeciesInfo.is_legendary)}</p>
         </div>
     </div>
     <div class="bottomAboutContainer" id="bottomAboutContainer">
         <h4> Breeding </h4>
         <div class="d-justySA w100">
             <div>
-                <p>Edition</p>
                 <p>Egg Groups</p>
                 <p>Egg Cycle</p>
+                <p>Hatch counter</p>
             </div>
             <div>
-                <p>${currentPokemonEditionInfo[0].version_group.name}</p>
                 <p>${currentSpeciesInfo.egg_groups[0].name}</p>
                 <p>${currentSpeciesInfo.growth_rate.name}</p>
+                <p>${(currentSpeciesInfo.hatch_counter * 255)} Steps</p>
             </div>        
         </div>
     </div>
     `;
 }
+
+function checkLegendaryStatus(status) {
+    if(status) {
+        return 'Legendary';
+    } else {
+        return 'Non Legendary Pokemon';
+    }
+}
+
+
+function renderThreeEvoBoxHTML(maxEvoName, midEvoName, minEvoName, levelTrigger1, levelTrigger2) {
+    return `
+    <div class="pokeEvoBox">
+        ${minEvoName}<br>
+        <img src="${currentEvoMinInfo[0].sprites.other.dream_world.front_default}">
+    </div>  
+    <div class="d-column">
+        <b style="text-align:center;" id="levelTrigger">Level up: ${levelTrigger1}</b>
+        <img src="./img/levelUp.png">
+    </div>
+    <div class="pokeEvoBox">
+        ${midEvoName}<br>
+        <img src="${currentEvoMidInfo[0].sprites.other.dream_world.front_default}">
+    </div> 
+    <div class="d-column">
+        <b style="text-align:center;">Level up: ${levelTrigger2}</b>
+        <img src="./img/levelUp.png">
+    </div>
+    <div class="pokeEvoBox">
+        ${maxEvoName}<br>
+        <img src="${currentEvoMaxInfo[0].sprites.other.dream_world.front_default}">
+    </div>   
+    `;
+}
+
+
+function renderTwoEvoBoxHTML(midEvoName, minEvoName, levelTrigger1) {
+    return `
+    <div class="pokeEvoBox">
+        ${minEvoName}<br>
+        <img src="${currentEvoMinInfo[0].sprites.other.dream_world.front_default}">
+    </div>  
+    <div class="d-column">
+        <b id="levelTrigger">Level up: ${levelTrigger1}</b>
+        <img src="./img/levelUp.png">
+    </div>
+    <div class="pokeEvoBox">
+        ${midEvoName}<br>
+        <img src="${currentEvoMidInfo[0].sprites.other.dream_world.front_default}">
+    </div> 
+    `;
+}
+
+
+function renderOneEvoBoxHtml(minEvoName) {
+    return `
+    <div class="pokeSingleBox">
+        <h2>${minEvoName}</h2>
+        <img src="${currentEvoMinInfo[0].sprites.other.dream_world.front_default}">
+        <p>No Evolution details have been found!</p>
+    </div>  
+    `;
+}
+
 
 
 
