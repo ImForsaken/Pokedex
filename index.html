@@ -29,16 +29,15 @@
 </head>
 
 <body onscroll="offSet()" onload="getListPokemonData()">
-
-    <div class="p-3 text-bg-dark">
-        <h5>
-            <i>Search for Pokemon</i>
-        </h5>
-        <input placeholder="Pokemon" id="search" type="text" class="validate" />
+    <div class="searchBarContainer">
+        <div class="p-3 text-bg-dark">
+            <h5>
+                <i>Search for Pokemon</i>
+            </h5>
+            <input placeholder="Pokemon" id="search" type="text" class="validate" />
+        </div>
+        <div class="searchbarHits d-none" id="searchbarHits"></div>
     </div>
-
-    <div class="searchbarHitsText" id="searchbarHits"></div>
-
     <div onclick="closePokeCard()" class="d-none fullPokemonCard" id="fullPokemonCard"></div>
     <div id="pokedex">
 

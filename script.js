@@ -214,14 +214,16 @@ function renderPokeAbout(i) {
     container.innerHTML = renderPokeAboutHTML(poke);
 }
 
+
 //renders specific pokemon about information
-function renderPokeAboutSearchbar(i) {
+function renderPokeAboutSearchbar() {
     let container = document.getElementById('pokeAboutContainer');
     let poke = currentPokemon;
 
     clearAndDisplayCardContainer('pokeAboutContainer', 'pokeStatsContainer', 'pokeEvoContainer', 'pokeMovesContainer');
     container.innerHTML = renderPokeAboutHTML(poke);
 }
+
 
 function renderPokeMoves() {
 
@@ -278,7 +280,7 @@ function renderPokeCardStats(i) {
 }
 
 
-function renderPokeCardStatsSearchbar(i) {
+function renderPokeCardStatsSearchbar() {
 
     let container = document.getElementById('pokeStatsContainer');
     let poke = currentPokemon;
@@ -299,9 +301,6 @@ function renderPokeCardStatsSearchbar(i) {
         `;
     }
 }
-
-
-
 
 
 async function offSet() {
@@ -330,10 +329,16 @@ function manageDataprocess(i) {
     let pokeNameUp = currentPokemon.name.charAt(0).toUpperCase() + currentPokemon.name.slice(1);
     pokeName.innerHTML = pokeNameUp;
     pokeNumber.innerHTML = currentPokemon.id
-    pokeImg.src = currentPokemon.sprites.other.dream_world.front_default;
-    
-}
+    if (currentPokemon.sprites.other.dream_world.front_default == null) {
+        pokeImg.src = currentPokemon.sprites.other["official-artwork"].front_default;
 
+    } else {
+        pokeImg.src = currentPokemon.sprites.other.dream_world.front_default;
+
+    }
+   
+
+}
 
 
 async function searchbarPokemon(i) {
@@ -345,8 +350,9 @@ async function searchbarPokemon(i) {
     container.innerHTML = renderPokeCardHTMLSearchbar(i - 1, poke, pokeNameUp);
     
     pokeCardTypesSearchbar(i);
-    renderPokeAboutSearchbar(i);
+    renderPokeAboutSearchbar();
 }
+
 
 async function openPokeCard(i) {
     let container = document.getElementById('fullPokemonCard');
@@ -359,6 +365,7 @@ async function openPokeCard(i) {
     pokeCardTypeProcess(i);
     renderPokeAbout(i);
 }
+
 
 //gets Species URL from specific pokemon
 async function getSpeciesUrl() {
@@ -536,12 +543,10 @@ function renderPokemonCard(i) {
                 <h1 id="pokemonName${i}"></h1>
                 <p id="pokeNumber${i}"></p>
             </div>
-                <img id="pokemonImage${i}" src="">
-                <div class="pokeTypeContainer" id="pokeTypeContainer${i}">
-                </div>
+            <img id="pokemonImage${i}" src="">
+            <div class="pokeTypeContainer" id="pokeTypeContainer${i}"></div>
         </div>
-        <div class="infoContainer d-none" id="infoContainer${i}">
-        </div> 
+        <div class="infoContainer d-none" id="infoContainer${i}"></div> 
     </div>
     `;
 }
@@ -583,7 +588,7 @@ function renderPokeCardHTML(i, poke, pokeNameUp) {
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div class="navbar-nav">
-                        <a onclick="renderPokeAbout(${i})" class="nav-item nav-link" href="#">About<span class="sr-only">(current)</span></a>
+                        <a onclick="renderPokeAbout(${i})" class="nav-item nav-link" href="#">About</a>
                         <a onclick="renderPokeCardStats(${i})" class="nav-item nav-link" href="#">Base Stats</a>
                         <a onclick="renderEvolutionChain()" class="nav-item nav-link" href="#">Evolution</a>
                         <a onclick="renderPokeMoves()" class="nav-item nav-link" href="#">Moves</a>
@@ -634,7 +639,7 @@ function renderPokeCardHTMLSearchbar(i, poke, pokeNameUp) {
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div class="navbar-nav">
                         <a onclick="renderPokeAboutSearchbar(${i})" class="nav-item nav-link" href="#">About<span class="sr-only">(current)</span></a>
-                        <a onclick="renderPokeCardStatsSearchbar(${i})" class="nav-item nav-link" href="#">Base Stats</a>
+                        <a onclick="renderPokeCardStatsSearchbar()" class="nav-item nav-link" href="#">Base Stats</a>
                         <a onclick="renderEvolutionChain()" class="nav-item nav-link" href="#">Evolution</a>
                         <a onclick="renderPokeMoves()" class="nav-item nav-link" href="#">Moves</a>
                     </div>

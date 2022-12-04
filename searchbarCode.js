@@ -5,7 +5,7 @@ const searchPokemon = async searchBox => {
 
     const res = await fetch('./pokeData.json');
     const pokeDataListJson = await res.json();
-
+    document.getElementById('searchbarHits').classList.remove('d-none')
     global = [];
     // pokemon.name.match(searchBox) || pokemon.types[0].match(searchBox)  || pokemon.id.toString().includes(searchBox)
     //Get Entered Data
@@ -22,12 +22,12 @@ const searchPokemon = async searchBox => {
       }
       if (fits2) {
         global.push(fits2);
-  
       }
       outputHtml(global[0]);
 
     } else {
       // console.log('kein input')
+      document.getElementById('searchbarHits').classList.add('d-none')
       document.getElementById('searchbarHits').innerHTML = "";
     }
  
