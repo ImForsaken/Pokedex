@@ -23,31 +23,6 @@ setURL('https://kevin-herbst.developerakademie.net/sbePokedex/smallest_backend_e
 
 //ALLE POKEMON KLASSEN
 
-/**let pokemonOverlayBorder = [
-    {
-        normal: '#',
-        fire: '#',
-        water: '#',
-        grass: '#',
-        electric: '#',
-        ice: '#',
-        fighting: '#',
-        poison: '#',
-        ground: '#',
-        flying: '#',
-        psychic: '#',
-        bug: '#',
-        rock: '#',
-        ghost: '#',
-        dark: '#',
-        dragon: '#',
-        steel: '#',
-        fairy: '#',
-    }
-];
- */
-
-
 
 //fetches the Data of specific Pokemon
 async function getListPokemonData() {
@@ -68,15 +43,6 @@ async function getListPokemonData() {
 
     // console.log('loaded Pokemon', currentPokemon);
 }
- //Max pokemon hits 1154
-// async function getAllPokemonForSearchbar() {
-//     const url = `https://pokeapi.co/api/v2/pokemon/?limit=1154`;
-//     let response = await fetch(url);
-//     let allPokemons = await response.json();
-//     searchbarPokemonHits.push(allPokemons);
-//     console.log('Searchbar hits', searchbarPokemonHits);
-
-// }
 
 
 
@@ -248,6 +214,14 @@ function renderPokeAbout(i) {
     container.innerHTML = renderPokeAboutHTML(poke);
 }
 
+//renders specific pokemon about information
+function renderPokeAboutSearchbar(i) {
+    let container = document.getElementById('pokeAboutContainer');
+    let poke = currentPokemon;
+
+    clearAndDisplayCardContainer('pokeAboutContainer', 'pokeStatsContainer', 'pokeEvoContainer', 'pokeMovesContainer');
+    container.innerHTML = renderPokeAboutHTML(poke);
+}
 
 function renderPokeMoves() {
 
@@ -281,11 +255,6 @@ function randomShinyEvent(category) {
 }
 
 
-
-
-
-
-
 function renderPokeCardStats(i) {
 
     let container = document.getElementById('pokeStatsContainer');
@@ -309,7 +278,27 @@ function renderPokeCardStats(i) {
 }
 
 
+function renderPokeCardStatsSearchbar(i) {
 
+    let container = document.getElementById('pokeStatsContainer');
+    let poke = currentPokemon;
+    container.innerHTML = '';
+
+    clearAndDisplayCardContainer('pokeStatsContainer', 'pokeMovesContainer', 'pokeEvoContainer', 'pokeAboutContainer');
+
+    for (let j = 0; j < poke.stats.length; j++) {
+        const pokeStats = poke.stats[j].base_stat;
+        const pokeStatsName = poke.stats[j].stat.name.charAt(0).toUpperCase() + poke.stats[j].stat.name.slice(1);
+        const pokeStatsWidth = Math.round(pokeStats / 2);
+
+        container.innerHTML += `
+                <p class="pokeStatsP1"><b>${pokeStatsName}:</b></p>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-label="Animated striped example" aria-valuenow="${pokeStats}" aria-valuemin="0" aria-valuemax="200" style="width: ${pokeStatsWidth}%"><b>${pokeStats}</b></div>
+                </div>
+        `;
+    }
+}
 
 
 
@@ -347,7 +336,17 @@ function manageDataprocess(i) {
 
 
 
-
+async function searchbarPokemon(i) {
+    await getSelectedPokemonUrls(i);
+    let container = document.getElementById('fullPokemonCard');
+    container.classList.remove('d-none');
+    let poke = currentPokemon;
+    let pokeNameUp = currentPokemon.name.charAt(0).toUpperCase() + currentPokemon.name.slice(1);
+    container.innerHTML = renderPokeCardHTMLSearchbar(i - 1, poke, pokeNameUp);
+    
+    pokeCardTypesSearchbar(i);
+    renderPokeAboutSearchbar(i);
+}
 
 async function openPokeCard(i) {
     let container = document.getElementById('fullPokemonCard');
@@ -386,6 +385,24 @@ function pokeListTypeProcess(Pokemon, i) {
         let typeBox = document.getElementById('pokeTypeBox' + i + j).innerHTML;
         let typeBoxContainer = document.getElementById('pokeTypeBox' + i + j);
         typeBoxContainer.style.background = getTypeBackgroundcolors(typeBox);
+    }
+    let typeBox = document.getElementById('pokeTypeBox' + i + 0).innerHTML;
+    i++
+    let cardBgr = document.getElementById('pokemonCard' + i);
+    cardBgr.style.background = getTypeBackgroundcolors(typeBox)
+}
+
+
+//gets Type for specific searched pokemon
+function pokeCardTypesSearchbar(i) {
+    for (let j = 0; j < currentPokemon.types.length; j++) {
+        const pokeTypeName = currentPokemon.types[j].type.name;
+        let pokeTypeUp = pokeTypeName.charAt(0).toUpperCase() + pokeTypeName.slice(1);
+        let typeBox = document.getElementById('pokeCardTypes');
+        typeBox.innerHTML += `
+        <p id="pokeTypeBox${i}${j}" class="pokeTypeBox">${pokeTypeUp}</p>
+        `;
+        setPokeCardBackgrounds(i, j);
     }
 }
 
@@ -583,6 +600,55 @@ function renderPokeCardHTML(i, poke, pokeNameUp) {
     `;
 }
 
+
+function renderPokeCardHTMLSearchbar(i, poke, pokeNameUp) {
+
+    return `
+    <div class="pokeCardContainer" id="pokeCardContainer" onclick="event.stopPropagation()">
+        <div class="pokeCardHeadBox">
+            <div class="pokeCardInteraction">
+                <button class="pokeCardBackBtn" onclick="closePokeCard()"></button>
+            </div>
+            <div id="pokeCardIdent" class="pokeCardIdent">
+                <div class="pokeTag">
+                    <h1><b>${pokeNameUp}</b></h1>
+                    <div id="pokeCardTypes" class="pokeCardTypes"></div>
+                </div>
+                    <h2>#000${i + 1}</h2>
+            </div>
+            <div class="pokePreview">
+                <div class="pokeImagesContainer">
+                    <img id="pokeCardPokeTypeImg" class="pokeCardPokeTypeImg" src="">
+                    <img id="pokeCardPokeImg" class="pokeCardPokeImg" src="${randomShinyEvent(poke)}">
+                </div>
+                <div class="pokeMainText">${currentSpeciesInfo.flavor_text_entries[1].flavor_text.replace('\f', ' ')}</div>
+            </div>
+        </div>
+        <div id="pokeCardBottomBox" class="pokeCardBottomBox">
+            <nav onclick="return false;" class="navbar pokeCardNavbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" href="#">Pokeinfo</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        <a onclick="renderPokeAboutSearchbar(${i})" class="nav-item nav-link" href="#">About<span class="sr-only">(current)</span></a>
+                        <a onclick="renderPokeCardStatsSearchbar(${i})" class="nav-item nav-link" href="#">Base Stats</a>
+                        <a onclick="renderEvolutionChain()" class="nav-item nav-link" href="#">Evolution</a>
+                        <a onclick="renderPokeMoves()" class="nav-item nav-link" href="#">Moves</a>
+                    </div>
+                </div>
+            </nav>
+            <div class="pokeAboutContainer" id="pokeAboutContainer"></div>
+            <div class="pokeStatsContainer d-none" id="pokeStatsContainer"></div>
+            <div class="pokeEvoContainer d-none" id="pokeEvoContainer"></div>
+            <div class="pokeMovesContainer d-none" id="pokeMovesContainer"></div>
+        </div>
+    </div>
+
+    `;
+}
 
 function renderPokeAboutHTML(poke) {
     return `
