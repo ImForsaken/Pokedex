@@ -13,15 +13,10 @@ let currentEvoMidInfo;
 let currentEvoMinInfo ;
 let pokeLoadLoop = 20;
 let pokeLoadLoopNow = 1;
-let maxPoke = 151;
 let lockFunction = false;
-//${currentSpeciesInfo.is_legendary}
-let downloadedPokemonData = [];
-setURL('https://kevin-herbst.developerakademie.net/sbePokedex/smallest_backend_ever');
 
 
 
-//ALLE POKEMON KLASSEN
 
 
 //fetches the Data of specific Pokemon
@@ -356,6 +351,7 @@ async function searchbarPokemon(i) {
 
 async function openPokeCard(i) {
     let container = document.getElementById('fullPokemonCard');
+    document.body.style.overflow = 'hidden';
     await getSelectedPokemonUrls(i);
     i--;
     let pokeNameUp = allPokemon[i].name.charAt(0).toUpperCase() + allPokemon[i].name.slice(1);
@@ -784,5 +780,6 @@ function closePokeCard() {
     currentEvoMidInfo = [];
     currentEvoMinInfo = [];
     document.getElementById('fullPokemonCard').classList.add('d-none');
+    document.body.style.overflow = 'unset';
 }
 
