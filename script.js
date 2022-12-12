@@ -306,7 +306,7 @@ async function offSet() {
         let currentScrollPosition = window.scrollY + window.innerHeight;
         lockFunction = true;
 
-        if (pokeLoadLoop <= 160) {
+        if (pokeLoadLoop <= 905) {
             if (currentScrollPosition + pageBottom > viewerHeight) {
                 await getListPokemonData();
             }
@@ -392,9 +392,24 @@ function pokeListTypeProcess(Pokemon, i) {
     let typeBox = document.getElementById('pokeTypeBox' + i + 0).innerHTML;
     i++
     let cardBgr = document.getElementById('pokemonCard' + i);
-    cardBgr.style.background = getTypeBackgroundcolors(typeBox)
+    cardBgr.style.background = setPokemonListCardsBgr(typeBox);
 }
 
+
+
+function whenMouseEnters(id) {
+    elemType = document.getElementById('searchbarType' + id).innerHTML;
+    elem = document.getElementById('pokemonSearchbarHitContainer' + id);
+    
+    elem.style.background = setPokemonListCardsBgr(elemType);
+}
+
+
+function whenMouseLeaves(id) {
+    elem = document.getElementById('pokemonSearchbarHitContainer' + id);
+    
+    elem.style.background = "none";
+}
 
 //gets Type for specific searched pokemon
 function pokeCardTypesSearchbar(i) {
@@ -460,6 +475,30 @@ function getTypeBackgroundcolors(element) {
     }[element.toLowerCase()] || 'white'
 }
 
+
+function setPokemonListCardsBgr(element) {
+    return {
+        fire: '#ff8200',
+        grass: '#1d8b15',
+        water: '#0372d5',
+        poison: '#7d00a1',
+        flying: '#588ef5',
+        normal: '#565656',
+        bug: '#9ddd01',
+        dark: '#8173bb',
+        dragon: '#0a72dd',
+        electric: '#ffe100',
+        fairy: '#ffbbf9',
+        fighting: '#ff0a3c',
+        ghost: '#19214e',
+        ground: '#ed002f',
+        ice: '#02ffd5',
+        psychic: '#ff504a',
+        rock: '#dfd19f',
+        steel: '#5695A3'
+
+    }[element.toLowerCase()] || 'white'
+}
 
 function getPokemonBackgroundcolor(element) {
     return {
@@ -542,7 +581,6 @@ function renderPokemonCard(i) {
             <img id="pokemonImage${i}" src="">
             <div class="pokeTypeContainer" id="pokeTypeContainer${i}"></div>
         </div>
-        <div class="infoContainer d-none" id="infoContainer${i}"></div> 
     </div>
     `;
 }
@@ -718,7 +756,7 @@ function renderThreeEvoBoxHTML(maxEvoName, midEvoName, minEvoName, levelTrigger1
     </div>  
     <div class="d-column">
         <b style="text-align:center;" id="levelTrigger">Level up: ${levelTrigger1}</b>
-        <img src="./img/levelUp.png">
+        <img class="levelUpImg" src="./img/levelUp.png">
     </div>
     <div class="pokeEvoBox">
         ${midEvoName}<br>
@@ -726,7 +764,7 @@ function renderThreeEvoBoxHTML(maxEvoName, midEvoName, minEvoName, levelTrigger1
     </div> 
     <div class="d-column">
         <b style="text-align:center;">Level up: ${levelTrigger2}</b>
-        <img src="./img/levelUp.png">
+        <img class="levelUpImg" src="./img/levelUp.png">
     </div>
     <div class="pokeEvoBox">
         ${maxEvoName}<br>
@@ -744,7 +782,7 @@ function renderTwoEvoBoxHTML(midEvoName, minEvoName, levelTrigger1) {
     </div>  
     <div class="d-column">
         <b id="levelTrigger">Level up: ${levelTrigger1}</b>
-        <img src="./img/levelUp.png">
+        <img class="levelUpImg" src="./img/levelUp.png">
     </div>
     <div class="pokeEvoBox">
         ${midEvoName}<br>
@@ -763,9 +801,6 @@ function renderOneEvoBoxHtml(minEvoName) {
     </div>  
     `;
 }
-
-
-
 
 
 function getAbilities(poke) {

@@ -2,7 +2,7 @@ let global = [];
 
 //Get Countries From Json File
 const searchPokemon = async searchBox => {
-
+    
     const res = await fetch('./pokeData.json');
     const pokeDataListJson = await res.json();
     document.getElementById('searchbarHits').classList.remove('d-none')
@@ -87,15 +87,15 @@ const searchPokemon = async searchBox => {
         .map(
           fit =>
       `
-      <div onclick="searchbarPokemon(${fit.id})">
-       <div class="col s12">
-         <div class="card  grey darken-4 darken-1">
+      <div id="pokemonSearchbarHitContainer${fit.id}" onmouseenter="whenMouseEnters(${fit.id})" onmouseleave="whenMouseLeaves(${fit.id})" onclick="searchbarPokemon(${fit.id})">
+       <div class="card col s12">
+       <div class="card-action">
+       <img class="pokeSearchbarHitImage" src="${fit.image}"></img>
+     </div>
+         <div class="  grey darken-4 darken-1">
            <div class="card-content white-text">
-              <h4 class="card-title m1">${fit.name}<span id="searchbarType" class="blue-text m-4"> ${fit.types.join(', ')}</span></h4>
-              <h5>${fit.id}</h5>
-              <div class="card-action">
-                <img class="pokeSearchbarHitImage" src="${fit.image}"></img>
-              </div>
+              <h4 class="card-title m1">${fit.name.charAt(0).toUpperCase() + fit.name.slice(1)}<span class="blue-text m-4" ><br>${fit.types.map(a=> `<span id="searchbarType${fit.id}">`+a+'</span>').join(', ')}</span></h4>
+              <h5>#${fit.id}</h5>
            </div>
          </div>
        </div>
@@ -105,11 +105,13 @@ const searchPokemon = async searchBox => {
         .join('');
         
       document.getElementById('searchbarHits').innerHTML = html;
-
-      
+      document.body.style.overflow = 'hidden';
+   
     } else {
       document.getElementById('searchbarHits').innerHTML = "No Pokemon found!";
     }
+    document.body.style.overflow = 'unset';
+
   };
   
   document

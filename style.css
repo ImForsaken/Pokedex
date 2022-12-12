@@ -11,6 +11,7 @@ body {
     top: 0;
     left: 0;
     right: 0;
+    z-index: 1;
 }
 
 #countryList {
@@ -19,22 +20,32 @@ body {
   }
 
 .pokeSearchbarHitImage{
-    height: 50px;
-    width: 50px;
+    height: 100px;
+    width: 100px;
 }
 
 .searchbarHits {
-    padding: 5px;
+    padding: 10px;
     color: black;
     font-size: 30px;
+    gap: 5px;
+    display: flex;
+    flex-direction: column;
     font-weight: bold;
     background-color: white;
+    overflow-y: scroll;
+    height: calc(100vh - 92px);
 }
 
+.card {
+    background-color: unset !important;
+    display: flex !important;
+    flex-direction: unset;
+    gap: 10px;
+}
 
 .card-content:hover {
     cursor: pointer;
-    background-color: #919191e0;
 }
 
 p {
@@ -52,12 +63,11 @@ p {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    /* width: 100vw; */
+    padding: 5px;
+
 }
 
 #pokedex {
-    /* background-color: #fb6C6C; */
     background-image: url(./img/pokeBGR.jpg);
     background-position: center;
     background-repeat: no-repeat;
@@ -74,11 +84,14 @@ p {
 
 
 .pokemonCard {
-    height: 250px;
-    width: 290px;
+    height: 220px;
+    width: 300px;
     background-color: white;
     box-shadow: 5px 5px 15px 5px rgb(0 0 0 / 55%);
-    border-radius: 15px 15px 0px 0px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .pokemonCard:hover {
@@ -167,7 +180,7 @@ p {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: black;
+    font-weight: bold;
 }
 
 .pokemonCard img {
@@ -209,10 +222,11 @@ p {
 
 .pokeCardContainer {
     position: relative;
-    /* height: 90%; */
+    height: 90%;
+    width: 80%;
     border-radius: 30px;
     overflow: hidden;
-
+    background-color: white;
     
 }
 
@@ -285,10 +299,8 @@ p {
 }
 
 .pokeCardPokeImg {
-    max-height: 220px;
-    min-height: 220px;
-    max-width: 220px;
-    min-width: 220px;
+    height: 220px;
+    width: 220px;
     z-index: 1;
 }
 
@@ -308,10 +320,9 @@ p {
     background-color: white;
     padding: 5px;
     margin: 0 5px 5px 5px;
-    /* position: absolute;
-    bottom: 50%; */
     color: black;
     font-weight: bold;
+    margin-top: 20px;
 }
 
 
@@ -319,15 +330,13 @@ p {
     display: flex;
     flex-direction: column;
     width: 100%;
-    /* height: 45%; */
+    height: 45%;
     border-radius: 25px 25px 30px 30px;
     background-color: white;
-    /* flex: 1; */
-    /* position: absolute;
-    top: 49.5%; */
-    /* margin-top: -20px; */
-
+    position: relative;
+    top: -30px;
 }
+
 
 .pokeCardNavbar {
     border-radius: 25px 25px 0px 0px;
@@ -440,6 +449,21 @@ p {
     border-radius: 10px;
 }
 
+@media (min-width: 3440px) {
+    #pokedex {
+        display: flex;
+    }
+    .pokemonCard {
+        height: 500px;
+        width: 500px;
+    }
+    .pokemonCard img {
+        height: 230px;
+        width: 230px;
+    }
+    
+}
+
 @media (max-width: 992px) {
     .navbar-toggler {
         display: unset;
@@ -451,11 +475,144 @@ p {
 }
 
 
+@media (max-width: 840px) {
+    .pokeCardContainer {
+        width: 85%;
+    }
+    .pokeMainText {
+        margin-top: 10px;
+    }
+    .pokeCardBottomBox {
+        top: -25px;
+    }
+}
+
 @media (max-width: 550px) {
+
+    .pokePreview {
+        margin-top: 15px;
+    }
+    .pokeCardContainer {
+        height: 100%;
+        width: 100%;
+    }
+    .pokeCardPokeImg {
+        height: 180px;
+        width: 180px;
+    }
+    .pokeCardBottomBox {
+        top: -40px;
+        height: 50%;
+    }
+    .pokeEvoContainer {
+        display: flex;
+        flex-direction: column;
+    }
+    .levelUpImg {
+        height: 30px;
+        transform: rotate(90deg);
+    }
+    .pokeEvoBox img {
+        height: 50px;
+    }
+}
+
+@media (max-width: 380px){
+    .pokePreview {
+        margin-top: 0;
+    }
+    .pokeCardIdent h2 {
+        border: 1px solid rgb(114, 114, 114);
+        width: fit-content;
+        height: 30px;
+        padding: 0;
+    }
+    .pokeCardBottomBox {
+        top: -90px;
+    }
+    .pokeCardPokeImg {
+        height: 120px;
+        width: 120px;
+    }
+    .pokeCardPokeTypeImg {
+        height: 55px;
+        width: 55px;
+    }
     .pokeMainText {
         display: none;
     }
 }
+
+/* @media (max-width: 390px) {
+    .pokeCardBottomBox {
+        height: unset;
+    }
+    .pokeCardPokeImg {
+        height: 125px;
+    }
+    .pokeEvoBox img {
+        height: 40px;
+    }
+    .levelUpImg {
+        height: 22px;
+    }
+    .pokePreview {
+        margin-top: 15px;
+    }
+    .pokeCardContainer {
+        height: 90%;
+    }
+}
+
+@media (max-width: 330px) {
+    .pokeCardContainer {
+        height: 95%;
+    }
+    .pokeCardBottomBox {
+        height: 100%;
+        top: -80px;
+    }
+    .pokeCardBackBtn {
+        background-size: 25px;
+    }
+    .pokeTag h2 {
+        display: none;
+    }
+    .pokeCardPokeImg {
+        width: unset;
+    }
+    .pokeCardPokeTypeImg {
+        height: 50px;
+        width: 50px;
+    }
+    .pokeCardIdent h2 {
+        border: 1px solid rgb(114, 114, 114);
+        width: fit-content;
+        height: 30px;
+        padding: 0;
+    }
+    .pokeCardIdent  {
+        margin-bottom: 0;
+        display: flex;
+        justify-content: unset;
+    }
+    .pokeCardTypes {
+        display: unset;
+    }
+    .pokePreview {
+        margin-top: 0px;
+    }
+    .pokeCardInteraction {
+        height: 30px;
+    }
+    .pokeAboutContainer {
+        justify-content: unset;
+    }
+    .pokeEvoContainer {
+        height: unset;
+    }
+    
+} */
 
 .lg {
     display: flex;
