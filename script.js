@@ -10,7 +10,7 @@ let evolutionChainMidSpeciesInfo = [];
 let evolutionChainMinSpeciesInfo = [];
 let currentEvoMaxInfo;
 let currentEvoMidInfo;
-let currentEvoMinInfo ;
+let currentEvoMinInfo;
 let pokeLoadLoop = 20;
 let pokeLoadLoopNow = 1;
 let lockFunction = false;
@@ -31,18 +31,14 @@ async function getListPokemonData() {
         manageDataprocess(pokeLoadLoopNow)
         pokeListTypeProcess(currentPokemon, pokeLoadLoopNow);
         console.log(currentPokemon);
-
-        // getPokemonSpeciesURL(i);
     }
     pokeLoadLoop += 20;
-
-    // console.log('loaded Pokemon', currentPokemon);
 }
 
 
 
 
-
+//tracks the species information of current itterated Pokemon
 async function getPokemonSpeciesURL(i) {
     const url = `https://pokeapi.co/api/v2/pokemon-species/${i}`;
     let response = await fetch(url);
@@ -59,7 +55,7 @@ async function getPokeEditionInfo() {
     let pokeUrl = await fetch(url);
     let currenPokeInfo = await pokeUrl.json();
     currentPokemonEditionInfo.push(currenPokeInfo);
-    
+
 }
 
 //Get all URLS from selected pokemon for all information that will displayed
@@ -102,45 +98,43 @@ async function getSelectedPokemonUrls(i) {
 function setEvoBoxInfo() {
 
     if (currentEvoMaxInfo && currentEvoMaxInfo.length > 0) {
-        let maxEvoName =  currentEvoMaxInfo[0].name.charAt(0).toUpperCase() + currentEvoMaxInfo[0].name.slice(1);
+        let maxEvoName = currentEvoMaxInfo[0].name.charAt(0).toUpperCase() + currentEvoMaxInfo[0].name.slice(1);
         let midEvoName = currentEvoMidInfo[0].name.charAt(0).toUpperCase() + currentEvoMidInfo[0].name.slice(1);
         let minEvoName = currentEvoMinInfo[0].name.charAt(0).toUpperCase() + currentEvoMinInfo[0].name.slice(1);
 
         checkSecondLevelUpTrigger();
         checkThirdLevelUptrigger();
-        // console.log(maxEvoName, midEvoName, minEvoName)
         return renderThreeEvoBoxHTML(maxEvoName, midEvoName, minEvoName, levelTrigger1, levelTrigger2);
 
     }
     if (currentEvoMidInfo && currentEvoMidInfo.length > 0) {
         let midEvoName = currentEvoMidInfo[0].name.charAt(0).toUpperCase() + currentEvoMidInfo[0].name.slice(1);
         let minEvoName = currentEvoMinInfo[0].name.charAt(0).toUpperCase() + currentEvoMinInfo[0].name.slice(1);
-        checkSecondLevelUpTrigger(); 
-        // console.log( midEvoName, minEvoName)
+        checkSecondLevelUpTrigger();
         return renderTwoEvoBoxHTML(midEvoName, minEvoName, levelTrigger1);
     }
     if (currentEvoMinInfo && currentEvoMinInfo.length > 0) {
         let minEvoName = currentEvoMinInfo[0].name.charAt(0).toUpperCase() + currentEvoMinInfo[0].name.slice(1);
-        // console.log(minEvoName)
         return renderOneEvoBoxHtml(minEvoName);
     }
 }
 
 
+//checks the level up trigger for Evolutioncontainer in Fullscreen card
 function checkSecondLevelUpTrigger() {
 
- //TODO ANSCHAUEN -- POKEMON Trigger werden nicht returnt
     if (evolutionChainInfo.chain.evolves_to[0].evolution_details[0].min_level) {
         return levelTrigger1 = evolutionChainInfo.chain.evolves_to[0].evolution_details[0].min_level;
-    } 
+    }
     else if (evolutionChainInfo.chain.evolves_to[0].evolution_details[0].item) {
         return levelTrigger1 = evolutionChainInfo.chain.evolves_to[0].evolution_details[0].item.name;
     } else {
-        console.log('KEIN TRIGGER GEFUNDEN');
         return levelTrigger1 = 'No Information';
     }
 }
 
+
+//checks the level up trigger for Evolutioncontainer in Fullscreen card
 function checkThirdLevelUptrigger() {
     if (evolutionChainInfo.chain.evolves_to[0].evolves_to[0].evolution_details[0].min_level) {
         return levelTrigger2 = evolutionChainInfo.chain.evolves_to[0].evolves_to[0].evolution_details[0].min_level;
@@ -153,6 +147,8 @@ function checkThirdLevelUptrigger() {
     }
 }
 
+
+//tracks down the highest Evolution of specific Pokemon for fullscreen card
 async function getMaxEvolutionDetails() {
     currentEvoMaxInfo = [];
     evolutionChainMaxSpeciesInfo = [];
@@ -168,6 +164,8 @@ async function getMaxEvolutionDetails() {
     console.log('ID 3', currentEvoMaxInfo);
 }
 
+
+//tracks the second stage of specific pokemon evolution chain
 async function getMidEvolutionDetails() {
     currentEvoMidInfo = [];
     evolutionChainMidSpeciesInfo = [];
@@ -183,7 +181,7 @@ async function getMidEvolutionDetails() {
     console.log('ID 2', currentEvoMidInfo);
 }
 
-
+//checks and display the lowest Pokemon in evolution chain
 async function getMinEvolutionDetails() {
     currentEvoMinInfo = [];
     evolutionChainMinSpeciesInfo = [];
@@ -200,7 +198,7 @@ async function getMinEvolutionDetails() {
 }
 
 
-// renders Pokecard about information
+// renders Fullscreen Pokecard about information container
 function renderPokeAbout(i) {
     let container = document.getElementById('pokeAboutContainer');
     let poke = allPokemon[i];
@@ -220,12 +218,11 @@ function renderPokeAboutSearchbar() {
 }
 
 
+//renders all moves to the Moves container in fullscreen card
 function renderPokeMoves() {
 
     let container = document.getElementById('pokeMovesContainer');
-
     clearAndDisplayCardContainer('pokeMovesContainer', 'pokeStatsContainer', 'pokeEvoContainer', 'pokeAboutContainer');
-    
     for (let j = 0; j < currentPokemon.moves.length; j++) {
         const move = currentPokemon.moves[j].move.name;
         container.innerHTML += `
@@ -234,7 +231,7 @@ function renderPokeMoves() {
     }
 }
 
-
+//manages the process for Evolutionchaincontainer
 function renderEvolutionChain() {
     let container = document.getElementById('pokeEvoContainer');
     clearAndDisplayCardContainer('pokeEvoContainer', 'pokeMovesContainer', 'pokeStatsContainer', 'pokeAboutContainer');
@@ -242,7 +239,7 @@ function renderEvolutionChain() {
 }
 
 
-//when pokecard is displayed the function decides if the Pokemon will displayed as shiny or not
+//gambles if displayed pokemon in fullscreen card will be shiny or not
 function randomShinyEvent(category) {
     if (Math.random() < 0.15) {
         return category.sprites.other.home.front_shiny;
@@ -275,6 +272,7 @@ function renderPokeCardStats(i) {
 }
 
 
+// generate card data depends on searchbar Hits
 function renderPokeCardStatsSearchbar() {
 
     let container = document.getElementById('pokeStatsContainer');
@@ -297,7 +295,7 @@ function renderPokeCardStatsSearchbar() {
     }
 }
 
-
+// triggers new Pokemon data download if scrolled to bottom of page
 async function offSet() {
 
     if (!lockFunction) {
@@ -316,7 +314,7 @@ async function offSet() {
 }
 
 
-// places the Info into pokemon list card
+// generate Infos for Pokedex list Cards
 function manageDataprocess(i) {
     let pokeName = document.getElementById(`pokemonName${i}`);
     let pokeNumber = document.getElementById(`pokeNumber${i}`);
@@ -326,16 +324,12 @@ function manageDataprocess(i) {
     pokeNumber.innerHTML = currentPokemon.id
     if (currentPokemon.sprites.other.dream_world.front_default == null) {
         pokeImg.src = currentPokemon.sprites.other["official-artwork"].front_default;
-
     } else {
         pokeImg.src = currentPokemon.sprites.other.dream_world.front_default;
-
     }
-   
-
 }
 
-
+//generate the info on the basis of specific Pokemon from the searchbar
 async function searchbarPokemon(i) {
     await getSelectedPokemonUrls(i);
     let container = document.getElementById('fullPokemonCard');
@@ -343,12 +337,11 @@ async function searchbarPokemon(i) {
     let poke = currentPokemon;
     let pokeNameUp = currentPokemon.name.charAt(0).toUpperCase() + currentPokemon.name.slice(1);
     container.innerHTML = renderPokeCardHTMLSearchbar(i - 1, poke, pokeNameUp);
-    
     pokeCardTypesSearchbar(i);
     renderPokeAboutSearchbar();
 }
 
-
+//generate the fullscreen Card of selected Pokemon from Pokedex list
 async function openPokeCard(i) {
     let container = document.getElementById('fullPokemonCard');
     document.body.style.overflow = 'hidden';
@@ -369,6 +362,8 @@ async function getSpeciesUrl() {
     let SpeciesUrlResponse = await fetch(PokespeciesURL);
     currentSpeciesInfo = await SpeciesUrlResponse.json();
 }
+
+
 //gets Evolutionchain URL from specific pokemon
 async function getEvolutionUrl() {
     const evolutionChainUrl = currentSpeciesInfo.evolution_chain.url;
@@ -376,7 +371,8 @@ async function getEvolutionUrl() {
     evolutionChainInfo = await evolutionResponse.json();
 }
 
-//gets the pokemon Type for the listed pokemon
+
+//gets the pokemon Type for the Pokedex listed pokemon
 function pokeListTypeProcess(Pokemon, i) {
     let typeContainer = document.getElementById(`pokeTypeContainer${i}`);
     i--;
@@ -396,20 +392,20 @@ function pokeListTypeProcess(Pokemon, i) {
 }
 
 
-
+//changes the Bgr of hovered Pokemon in searchbar depending on its main Type
 function whenMouseEnters(id) {
     elemType = document.getElementById('searchbarType' + id).innerHTML;
     elem = document.getElementById('pokemonSearchbarHitContainer' + id);
-    
     elem.style.background = setPokemonListCardsBgr(elemType);
 }
 
 
+//changes the Bgr color of before hovered Pokemon to none
 function whenMouseLeaves(id) {
     elem = document.getElementById('pokemonSearchbarHitContainer' + id);
-    
     elem.style.background = "none";
 }
+
 
 //gets Type for specific searched pokemon
 function pokeCardTypesSearchbar(i) {
@@ -443,14 +439,12 @@ function setPokeCardBackgrounds(i, j) {
     let firstTypeBox = document.getElementById('pokeTypeBox' + i + 0);
     let typeBox = document.getElementById('pokeTypeBox' + i + j);
     let typeIcon = document.getElementById('pokeCardPokeTypeImg');
-    // let typeBoxMain = document.getElementById('pokeTypeBox' + i + 0);
-    // let container = document.getElementById('pokeCardContainer');
     typeBox.style.backgroundColor = getTypeBackgroundcolors(typeBox.innerHTML);
     typeIcon.src = getPokemonTypeIcon(firstTypeBox.innerHTML);
-    typeIcon.style.backgroundColor = getPokemonBackgroundcolor(firstTypeBox.innerHTML);    
+    typeIcon.style.backgroundColor = getPokemonBackgroundcolor(firstTypeBox.innerHTML);
 }
 
-// SPäter einfügen um backgrounds zu deciden
+
 function getTypeBackgroundcolors(element) {
     return {
         fire: '#FBA54C',
@@ -476,6 +470,7 @@ function getTypeBackgroundcolors(element) {
 }
 
 
+//determine the Bgr for Pokedex listed Pokemon cards
 function setPokemonListCardsBgr(element) {
     return {
         fire: '#ff8200',
@@ -499,6 +494,7 @@ function setPokemonListCardsBgr(element) {
 
     }[element.toLowerCase()] || 'white'
 }
+
 
 function getPokemonBackgroundcolor(element) {
     return {
@@ -524,7 +520,7 @@ function getPokemonBackgroundcolor(element) {
     }[element.toLowerCase()] || 'white'
 }
 
-
+//determine the correct type symbol for the Fullscreen Pokemon card
 function getPokemonTypeIcon(element) {
     return {
         fire: './img/fire.svg',
@@ -550,7 +546,7 @@ function getPokemonTypeIcon(element) {
 }
 
 
-
+//clears all data from Fullscreen Pokemon card Information containers
 function clearAndDisplayCardContainer(main, cc1, cc2, cc3) {
 
     let container = document.getElementById(main);
@@ -569,7 +565,7 @@ function clearAndDisplayCardContainer(main, cc1, cc2, cc3) {
     container.innerHTML = '';
 }
 
-
+//generate all Pokedex listed Pokemoncards
 function renderPokemonCard(i) {
     return /*html*/`
     <div onclick="openPokeCard(${i})" class="pokemonCard glow-on-hover" id="pokemonCard${i}">
@@ -585,10 +581,6 @@ function renderPokemonCard(i) {
     `;
 }
 
-
-
-
-//TODO MAYBE FOR LATER                 <img id="pokeCardLikeImg" class="pokeCardLikeImg" src="./img/notLiked.png">
 
 function renderPokeCardHTML(i, poke, pokeNameUp) {
 
@@ -689,6 +681,7 @@ function renderPokeCardHTMLSearchbar(i, poke, pokeNameUp) {
     `;
 }
 
+
 function renderPokeAboutHTML(poke) {
     return `
     <div class="headAboutContainer" id="headAboutContainer">
@@ -739,8 +732,9 @@ function renderPokeAboutHTML(poke) {
     `;
 }
 
+
 function checkLegendaryStatus(status) {
-    if(status) {
+    if (status) {
         return 'Legendary';
     } else {
         return 'Non Legendary Pokemon';
@@ -803,8 +797,9 @@ function renderOneEvoBoxHtml(minEvoName) {
 }
 
 
+//get all Pokemon abilities for Fullscreen Pokemon card
 function getAbilities(poke) {
-    if(1 in poke.abilities) {
+    if (1 in poke.abilities) {
         return poke.abilities[1].ability.name;
     }
 }

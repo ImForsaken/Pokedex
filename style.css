@@ -5,7 +5,6 @@ body {
     padding: 0;
 }
 
-
 .searchBarContainer {
     position: fixed;
     top: 0;
@@ -81,7 +80,6 @@ p {
     flex-wrap: wrap;
     margin-top: 92px;
 }
-
 
 .pokemonCard {
     height: 220px;
@@ -402,7 +400,6 @@ p {
 
 .pokeEvoContainer {
     height: 100%;
-    /* margin-top: 10px; */
     display: flex;
     justify-content: space-around;
     align-items: center;
