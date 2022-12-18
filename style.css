@@ -5,6 +5,24 @@ body {
     padding: 0;
 }
 
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 10px;
+  }
+   
+::-webkit-scrollbar-thumb {
+    background: red; 
+    border-radius: 10px;
+  }
+  
+::-webkit-scrollbar-thumb:hover {
+    background: #b30000; 
+  }
+
 .searchBarContainer {
     position: fixed;
     top: 0;
@@ -362,9 +380,14 @@ p {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+    padding: 20px;
 }
 
 .headAboutContainer {
+    margin-bottom: 20px;
+}
+
+.headAboutBoxParent {
     display: flex;
     justify-content: space-around;
 }
@@ -375,11 +398,12 @@ p {
 
 
 .pokeStatsContainer {
-    height: 80%;
+    height: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    padding: 10px;
 }
 
 
@@ -539,77 +563,6 @@ p {
         display: none;
     }
 }
-
-/* @media (max-width: 390px) {
-    .pokeCardBottomBox {
-        height: unset;
-    }
-    .pokeCardPokeImg {
-        height: 125px;
-    }
-    .pokeEvoBox img {
-        height: 40px;
-    }
-    .levelUpImg {
-        height: 22px;
-    }
-    .pokePreview {
-        margin-top: 15px;
-    }
-    .pokeCardContainer {
-        height: 90%;
-    }
-}
-
-@media (max-width: 330px) {
-    .pokeCardContainer {
-        height: 95%;
-    }
-    .pokeCardBottomBox {
-        height: 100%;
-        top: -80px;
-    }
-    .pokeCardBackBtn {
-        background-size: 25px;
-    }
-    .pokeTag h2 {
-        display: none;
-    }
-    .pokeCardPokeImg {
-        width: unset;
-    }
-    .pokeCardPokeTypeImg {
-        height: 50px;
-        width: 50px;
-    }
-    .pokeCardIdent h2 {
-        border: 1px solid rgb(114, 114, 114);
-        width: fit-content;
-        height: 30px;
-        padding: 0;
-    }
-    .pokeCardIdent  {
-        margin-bottom: 0;
-        display: flex;
-        justify-content: unset;
-    }
-    .pokeCardTypes {
-        display: unset;
-    }
-    .pokePreview {
-        margin-top: 0px;
-    }
-    .pokeCardInteraction {
-        height: 30px;
-    }
-    .pokeAboutContainer {
-        justify-content: unset;
-    }
-    .pokeEvoContainer {
-        height: unset;
-    }
-    
-} */
 
 .lg {
     display: flex;
