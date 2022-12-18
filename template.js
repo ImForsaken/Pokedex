@@ -125,7 +125,7 @@ function renderPokeAboutHTML(poke) {
       <div class="headAboutContainer" id="headAboutContainer">
         <h4> Info </h4>
         <div class="headAboutBoxParent">
-          <div class="headAboutBoxLeft" id="headAboutBoxLeft">
+          <div class="headAboutBoxLeft" id="headAboutBoxLeft" style="width: 50%">
               <div class="pokeAboutChildBox d-flex" id="pokeAboutHeight">
                   <p><b>Height:</b></p>
               </div>
@@ -145,7 +145,7 @@ function renderPokeAboutHTML(poke) {
                   <p><b>Legendary status:</b></p>
               </div>
           </div>
-          <div class="headAboutBoxRight">
+          <div class="headAboutBoxRight" style="width: 50%">
               <p>${poke.height / 10} M</p>
               <p>${poke.weight / 10} KG</p>
               <p>${poke.abilities[0].ability.name}, ${getAbilities(poke)}</p>
@@ -158,12 +158,12 @@ function renderPokeAboutHTML(poke) {
       <div class="bottomAboutContainer" id="bottomAboutContainer">
           <h4> Breeding </h4>
           <div class="d-justySA w100">
-              <div>
+              <div style="width: 50%">
                   <p><b>Egg Groups:</b></p>
                   <p><b>Egg Cycle:</b></p>
                   <p><b>Hatch counter:</b></p>
               </div>
-              <div>
+              <div style="width: 50%">
                   <p>${currentSpeciesInfo.egg_groups[0].name}</p>
                   <p>${currentSpeciesInfo.growth_rate.name}</p>
                   <p>${currentSpeciesInfo.hatch_counter * 255} Steps</p>
